@@ -22,8 +22,10 @@ Aaron Parker –
 
 Goals:
 Work Norms:
--	Definition of done
-Ground Rules:
+-	Definition of done: Passing unit and acceptance tests for given story, and everyone has approved the pull requests.
+Ground Rules: 
+  1. Its okay to miss one or two meetings with a valid excuse, if a memeber misses more than that, absences will be documented and could be grounds for discipline.
+  2. Weekly scrum meetings should roughly be 15 mins and should be logged.
 Meetings:
 Group Communication and Interaction:
 Group participation and work quality:
