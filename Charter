@@ -1,10 +1,10 @@
 Group Charter: Django Unchained
+
 Scrum Meeting Times:
 Monday - 10am
 Thursday - 11am
 Friday - 6pm
 Saturday - 10am
-
 
 Group Contact Info:
 Samuel Gaudet – 
@@ -20,29 +20,29 @@ cewicker@uwm.edu
 Bilal Ahmed – 
 Aaron Parker – 
 
-Goals:
+Objective:
+  To create a functioning program with no bugs, a good UI, that achieves the goals of the Product Owner.
 Work Norms:
--	Definition of done: Passing unit and acceptance tests for given story, and everyone has approved the pull requests.
+-	Definition of done: Passing unit and acceptance tests for given story, and minimum three group members approved the pull requests.
 Ground Rules: 
-  1. Its okay to miss one or two meetings with a valid excuse, if a memeber misses more than that, absences will be documented and could be grounds for discipline.
-  2. Weekly scrum meetings should roughly be 15 mins and should be logged.
+  1. It's okay to miss one or two meetings with a valid excuse, if a memeber misses more than that, absences will be documented and could be grounds for discipline.
+  2. Weekly scrum meetings should be roughly 15 mins and will be logged.
   3. Be nice and respectful.
   4. Minimum three group members must respond to pull requests within 24 hours, if this is not happening, discuss in Scrum Meeting
   5. There will be a group chat with all team members in Teams.
-  6. If someone says they are struggling in the group chat, other team members should reach out to offer help.
-Meetings:
+  6. If someone says they are struggling in the group chat, other team members should reach out to offer help within 24 hours, preferably sooner.
  
 Disciplinary Procedures:
   -Two or more documented infractions will lead to disciplinary action.
 Disciplinary action: 
-  -An email must be sent to the student with all group members cc'd and we will attempt to resolve the issue.
-  -If there is another infraction there will be another email with all group members cc'd.
-  -If we feel it hasn't been resolved bring to TA.
-  -If it still hasnt been resolved bring to Professor Rock.
+  -An email must be sent to the student with all group members cc'd with the goal of attempting to understand and resolve the issue.
+  -If there is another infraction there will be another email with all group members cc'd, with the goal of giving the student another chance to resolve the issues.
+  -If we feel it hasn't been resolved we will bring it to the TA.
+  -If it still hasnt been resolved we will bring it to Professor Rock.
 
-We, the TEAM NAME, agree with the Group Charter and will try our best to uphold it.
+We, DjangoUnchained, agree with the Group Charter and will try our best to uphold it.
 Name Date
-…
+Samuel Gaudet 11-12-23
 …
 …
 …
