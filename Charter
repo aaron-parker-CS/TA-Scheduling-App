@@ -30,6 +30,8 @@ together a team project.
 
 Work Norms:
 -	Definition of done: Passing unit and acceptance tests for given story, and minimum three group members approved the pull requests.
+-  If one member is taking a substantial amount of time more than the others, it will be examined
+by the group as to whether his work loads should be increased or decreased.
 
 Ground Rules: 
   1. It's okay to miss two meetings with a valid excuse, if a memeber misses more than that, absences will be documented and could be grounds for discipline.
@@ -39,15 +41,20 @@ Ground Rules:
   5. There will be a group chat with all team members in Teams.
   6. If someone says they are struggling in the group chat, other team members should reach out to offer help within 24 hours, preferably sooner.
   7. If someone has claimed a task, another group member must not work on that task without consulting with the person who claimed it.
- 
+  8. If someone is not present for the Daily Scrums after 5 minutes, they are considered to be absent.
+  9. If someone knows they're going to be unavailable for a Daily Scrum, they can be considered present if they send in their answers to the three questions, and tasks they volunteer for, before the meeting begins.
+  10. All decisions by the group must be unanimous, that is, if one person does not agree to the decision, we cannot consider that decision made.
+
 Disciplinary Procedures:
   -An INFRACTION occurs when one or more of the ground rules are broken.
+  -There will be a document to log infractions (if any)
   -Two or more documented infractions will lead to disciplinary action.
 Disciplinary action: 
   -An email must be sent to the student with all group members cc'd with the goal of attempting to understand and resolve the issue.
   -If there is another infraction there will be another email with all group members cc'd, with the goal of giving the student another chance to resolve the issues.
   -If we feel it hasn't been resolved we will bring it to the TA.
   -If it still hasnt been resolved we will bring it to Professor Rock.
+  -If there is one more infraction, that person will no longer be considered a member of the group.
 
 We, DjangoUnchained, agree with the Group Charter and will try our best to uphold it.
 Name Date
