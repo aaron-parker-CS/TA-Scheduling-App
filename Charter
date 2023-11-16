@@ -23,38 +23,178 @@ bahmed@uwm.edu
 (414) 399-5719
 
 
-Objective:
-  To create a functioning program with no bugs, a good UI, that achieves the goals of the Product Owner. To get a letter grade of "A" on the assignment. To attain practical knowledge and experience of what it means to be a software engineer
+Goals:
+ 1. To create a functioning program with no bugs, a good UI, that achieves the goals of the Product Owner. 
+ 2. To get a letter grade of "A" on the assignment. 
+ 3. To attain practical knowledge and experience of what it means to be a software engineer,
 and to familiarize ourselves with the methods and practices that are required to pull
 together a team project.
 
 Work Norms:
--	Definition of done: Passing unit and acceptance tests for given story, and minimum three group members approved the pull requests.
-- If one member is taking on 5 or more tasks more than the others or misses a due date, it will be examined
-by the group as to whether their work load should be decreased.
+
+1. Time commitment required by each group member: 
+Time commitment is a difficult thing to determine, seeing as one member may be able to 
+complete the same job in less amount of time. The goal is to complete the job. If one 
+member is taking a substantial amount of time more than the others, it will be examined 
+by the group as to whether his work load should be decreased.
+
+2. Dealing with different work habits:
+The work habits of any particular member will not be an issue as long as the member 
+communicates progress, produces quality work, and the work is done by the dates 
+established by the group. If the member does not meet these standards, procedures to deal 
+with that member are further detailed in the ground rules.
+
+3. Pull Requests:
+A minimum of three group members must respond to pull requests within 24 hours, if this is not happening, the group should discuss in a meeting,
+and decide if a modification of this rule is necessary. However, it is understood that this is the rule and best practice until such a meeting might happen.
+
+4. Definition of done: 
+A PBI will be considered done when it is - 
+Passing unit test
+Passing acceptance tests
+Further, we trust every group member to move a task from, "In Progress", to "Completed" in the Trello board according to their best judgement.
+If a group member is doing this incorrectly, it can be handled as directed in Group participation and work quality.
+
 
 Ground Rules: 
-  1. It's okay to miss two meetings with a valid excuse, if a memeber misses more than that, absences will be documented and could be grounds for discipline.
-  2. Weekly scrum meetings should be roughly 15 mins and will be logged.
-  3. Be nice and respectful.
-  4. Minimum three group members must respond to pull requests within 24 hours, if this is not happening, discuss in Scrum Meeting
-  5. There will be a group chat with all team members in Teams.
-  6. If someone says they are struggling in the group chat, other team members should reach out to offer help within 24 hours, preferably sooner.
-  7. If someone has claimed a task, another group member must not work on that task without consulting with the person who claimed it.
-  8. If someone is not present for the Daily Scrums after 5 minutes, they are considered to be absent.
-  9. If someone knows they're going to be unavailable for a Daily Scrum, they can be considered present if they send in their answers to the three questions, and tasks they volunteer for, before the meeting begins.
-  10. All decisions by the group must be unanimous, that is, if one person does not agree to the decision, we cannot consider that decision made.
+  Meetings:
+
+  1. Length of meetings:
+Meetings may have to take as long as it takes, however meetings longer than 1 hours 
+are discouraged. The purpose of meetings is to establish communication and give 
+direction to the project. Meetings once a week should be enough unless it is decided by 
+the group that additional meetings should be scheduled. This communication should take 
+place through the group Teams chat. It is understood that if a meeting takes too long, members 
+may have to leave for classes or work obligations. This type of situation will not 
+constitute an infraction.
+
+  2. Missing a meeting: 
+It's okay to miss two meetings with a valid excuse. If a member misses more than that, 
+absences will be considered infractions and be documented. Acceptable justification of a missed meeting includes, 
+but is not limited to: injury, illness, family emergency, work, conflicting class schedule, or death (yourself or other). 
+If a meeting is missed for any other reason, the affected group members will decide as to 
+whether the reason for missing the meeting is acceptable or in need of disciplinary action.
+If someone knows they're going to be unavailable for a Daily Scrum, 
+they can be considered present if they send in their answers to the three questions, and tasks they volunteer for, before the meeting begins.
+
+  3. Tardiness to meetings:
+If someone is not present for a meeting after 5 minutes, they are considered to be absent, which is an infraction.
+If an individual arrives at a meeting after the start time and the meeting has yet to get into purposeful conversation 
+then it may be overlooked. 
+
+  4. Phone/Food/Drink during meetings:
+We understand life is busy, and you may wish to multitask during a meeting. We will not regulate things such as this.
+However, it is highly encouraged that each member do what is necessary to pay attention to the entire meeting. As such,
+phone use that is not diretly related to the meeting is discouraged. Food and/or drink is less likely to interfere with concentration however,
+and is more acceptable. 
+
+  Group communication and interaction: 
+
+  1. Regular Communicaton:
+Regular communication should occur throughout the Sprint via the Microsoft Teams group chat. 
+This communication should include simple updates on ones progress as they progress through tasks,
+especially for tasks that affect the Team's progress as a whole. If a member forgets to post progress, any 
+member can send an inquiry email to the person. If the email is not responded 
+to in 24 hours, the group will begin to take on that member's responsibilities through the 
+decision making process stated in part six of this section. If the member has a good 
+reason for not responding, it will be taken into consideration as to whether or not this will be considered an infraction.
+If however, the member responds within the 24 hour time period stating they forgot, no disciplinary 
+action will be taken. If a member is having problems with their portion of the work, they 
+should let the rest of the group knew immediately so they can received any needed help 
+as soon as possible. 
+
+  2. Group communication on tardiness/missed meetings and meeting information:
+If a member has prior knowledge of a missed meeting or tardiness of a day or more, that 
+member shall send a message to the Microsoft Teams group chat signifying this. If it is the day of the 
+meeting and a group member is going to miss the meeting or knows they are going to be 
+tardy by more than five minutes, that member shall send a message to the Teams group chat informing them of the situation. 
+Failure to do so more than once will result in an infraction. 
+
+  3. Communication ethics:
+There shall be an understanding among group members that all opinions or input by any 
+individual member is valued and will be respected, even if disagreed with. People and/or 
+their opinions shall not in any way be degraded or dismissed but all opinions shall have 
+equal consideration. If a member feels his opinions are being rejected without good 
+reason, he has a right to bring it up to the group. The group will 
+then discuss the situation and either reconsider their opinions, or make a case as to why 
+the members opinions are not being used. If there is such a disagreement, the note taker 
+or agenda maker will record the situation as well as the member who feels disregarded. If 
+this situation happens more than three times the member has a right to go to the TA and 
+state their case. If the problem is not solved by the TA, the opportunity is then open to 
+state their case to Professor Rock.
+
+  4. Group structure:
+Each member of the Team has a similar skill set, and as such, there will be no specific Team roles.
+Group members who specialize in certain areas are encouraged to volunteer for tasks related to their areas of expertise.
+In the context of Scrum, there is no group leader, and everyone should view each other as equals. 
+If anyone feels that a specific group member is acting dictatorially, they should bring this up in a meeting.
+The group will then discuss this, and decide if it consitutes an infraction.
+
+  5. Decision making:
+Any decisions which need to be made about the project or project direction must be unanimous, 
+that is, if one person does not agree to the decision, we cannot consider that decision made. However, disciplinary 
+action will be made by a majority vote, seeing as the offending group member in question is not likley to vote against themself. 
+
+  6. Group decisions on delegation:
+The delegation of responsibilities to group members will be decided in the following 
+fashion. All tasks and responsibilities will be discussed as a group. Then 
+each group member has the opportunity to volunteer for the task they may want. 
+We trust that all group members will be willing to take on a fair and equally distributed amount of work.
+However, if any group member feels this is not happening, they may bring it up in a meeting, and the group
+will discuss and treat it as an infraction if they deem necessary against any group member(s) not taking on enough work (tasks).
+
+Group participation and work quality:
+
+  1. Group participation:
+See item 6 of Group Communication and Interaction. Further, 
+if one member is taking on 5 or more tasks more, or 5 or less than the other group member's average or misses a due date, it will be examined
+by the group as to whether their work load should be increased/decreased, or whether this may be grounds for an infraction.
+
+  2. Work not up to standard:
+Group standards, regarding quality and timeliness of work, are important to uphold if we 
+aim to succeed as a group. With goal 2 in mind we should always be putting forth the 
+effort necessary to submit our best work. However, if there is a problem it should be 
+handled in the following manner. It is understandable that at some point in this project 
+someone may not be able to put in the time or effort necessary to meet group standards. If 
+that should happen he must notify the group as soon as possible so the task can be 
+redistributed, using the system established in group decisions and delegation, and the 
+group can continue functioning at its highest level. If he continues to repeat this behavior 
+it may result in an infraction depending on the severity.  
+
+  3. Group members unprepared:
+It is understood that people are busy with other classes and school work. If by group 
+consensous it is obvious that a member is unprepared for a meeting, and their 
+unpreparedness creates a hindrance to the group and project, then it will be considered an infraction.
+
+  4. Workload too heavy:
+If, considering the time restraints and number of group members actively participating, the group feels there is not 
+sufficient enough time to complete the project, a plea of mercy will be sent to the Rock via email 
+and in person which logs the details of the amount of work to be done, the status of how 
+far we are, and why we cant complete it in that time period. 
+
+5. Help:
+If someone says they are struggling in the group chat, other team members should endeavor to reach out to offer help within 24 hours, preferably sooner.
+
+6. Task Ownership:
+If someone has claimed a task, another group member must not work on that task without consulting with the person who claimed it.
+If someone is violating this rule, it should be brought up in a meeting, and the Team will decide if it constitutes an infraction.
 
 Disciplinary Procedures:
-  -An INFRACTION occurs when one or more of the ground rules are broken.
-  -There will be a document to log infractions (if any)
-  -Two or more documented infractions will lead to disciplinary action.
-Disciplinary action: 
-  -An email must be sent to the student with all group members cc'd with the goal of attempting to understand and resolve the issue.
-  -If there is another infraction there will be another email with all group members cc'd, with the goal of giving the student another chance to resolve the issues.
-  -If we feel it hasn't been resolved we will bring it to the TA.
-  -If it still hasnt been resolved we will bring it to Professor Rock.
-  -If there is one more infraction, that person will no longer be considered a member of the group.
+
+  1. Infractions:
+An INFRACTION occurs when one or more of the ground rules are broken, or the Team decides something is an infraction in a meeting.
+There will be a document to log infractions (if any). Two or more documented infractions will lead to disciplinary action.
+All infractions are treated with the same severity, as such DjangoUnchained makes no distinction between minor and major group offences.
+
+  2. Disciplinary Log:
+There will be a document to log infrations (if any).
+
+  3. Disciplinary Action Sequence of Events:
+  First, an email must be sent to the student with all group members cc'd with the goal of attempting to understand and resolve the issue.
+  Second, if there is another infraction there will be another email with all group members cc'd, with the goal of giving the student another chance to resolve the issues.
+  Third, if we feel it hasn't been resolved we will bring it to the TA, Apoorv.
+  Fourth, if it still hasn't been resolved we will bring it to Professor Rock.
+  Finally, if there is one more infraction, and Rock has not removed them from the group, that person will no longer be considered a member of the group.
 
 We, DjangoUnchained, agree with the Group Charter and will try our best to uphold it.
 Name Date
