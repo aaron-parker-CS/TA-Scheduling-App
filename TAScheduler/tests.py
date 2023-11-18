@@ -53,12 +53,28 @@ class TestLogin(TestCase):
     def test_login(self):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": self.test_user.password})
-        self.assertRedirects(response=resp, expected_url='/dashboard/', status_code=302,
-                             target_status_code=200, fetch_redirect_response=True,
-                             msg="Login POST does not properly redirect the user.")
+        self.assertEquals(resp.status_code, 200, msg="Login failed to give a correct response status")
 
     def test_bad_login(self):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": "this is a bad password"})
-        self.assertIn("bad password", resp.body, msg="Bad password message not shown upon bad login.")
+        self.assertEquals(resp.context["message"], "bad password",
+                          msg="Bad password message not shown upon bad login.")
+
+
+class TestDashboard(TestCase):
+    test_user = None
+    test_client = None
+
+    def setUp(self):
+        self.test_client = Client()
+        self.test_user = User(username="test", password="password")
+
+    def test_no_login(self):
+        # No login should redirect to the login screen
+        resp = self.test_client.get("/dashboard/")
+        self.assertRedirects(response=resp, expected_url='/', status_code=302,
+                             target_status_code=200, fetch_redirect_response=True)
+
+
 

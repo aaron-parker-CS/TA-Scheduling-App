@@ -15,6 +15,12 @@ a {
     justify-content: center;
 }
 
+.alert {
+    font-family: Arial;
+    font-size: 24px;
+    font-color: red;
+}
+
 div {
   padding: 1em;
   max-width: 100%;

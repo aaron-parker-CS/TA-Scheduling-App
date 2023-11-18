@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from TAScheduler.views import Home
+
+from DjangoUnchained import settings
+from TAScheduler.views import Home, Dashboard, logout
+from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Home.as_view(), name="main-view")
+    path('', Home.as_view(), name="main-view"),
+    path('dashboard/', Dashboard.as_view(), name="dashboard-view"),
+    path('dashboard/logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
 ]
