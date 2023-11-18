@@ -25,15 +25,15 @@ class Section(models.Model):
         ("Dis", "DISCUSSION")
     ]
     course_num = models.ForeignKey('Course', on_delete=models.CASCADE)
-    section_num = models.IntegerField(primary_key=True)
+    section_num = models.IntegerField(null=False, default=0)
     section_type = models.CharField(max_length=3, choices=SECTION_CHOICES)
-    section_is_on_monday = models.BooleanField(null=False)
-    section_is_on_tuesday = models.BooleanField(null=False)
-    section_is_on_wednesday = models.BooleanField(null=False)
-    section_is_on_thursday = models.BooleanField(null=False)
-    section_is_on_friday = models.BooleanField(null=False)
-    section_start_time = models.TimeField(null=False)
-    section_end_time = models.TimeField(null=False)
+    section_is_on_monday = models.BooleanField(null=False, default=False)
+    section_is_on_tuesday = models.BooleanField(null=False, default=False)
+    section_is_on_wednesday = models.BooleanField(null=False, default=False)
+    section_is_on_thursday = models.BooleanField(null=False, default=False)
+    section_is_on_friday = models.BooleanField(null=False, default=False)
+    section_start_time = models.TimeField(null=False, default="00:00")
+    section_end_time = models.TimeField(null=False, default="00:00")
     location = models.CharField(max_length=20, null=False)
 
 
@@ -41,4 +41,4 @@ class UserAssignment(models.Model):
     # M-N
     # A user may have many section assignments, a section may have more than one TA or lecturer assignment
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    section_num = models.ForeignKey('Section', on_delete=models.CASCADE)
+    section_num = models.ForeignKey(to=Section, on_delete=models.CASCADE)
