@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Course, Section, User, UserAssignment
-from django.contrib.auth import authenticate, login, logout, user_logged_in
+from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 class Home(View):
