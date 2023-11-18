@@ -1,0 +1,30 @@
+label {
+  font-family: Arial;
+}
+
+a {
+  font-family: Arial;
+  font-size: 12px;
+}
+.center {
+    width: 50%;
+    height: 50%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div {
+  padding: 1em;
+  max-width: 100%;
+}
+.container {
+  display: grid;
+  place-items: center;
+  height: 8em;
+}
+
+td {
+  padding: 5px;
+}
