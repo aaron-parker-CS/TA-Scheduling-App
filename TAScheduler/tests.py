@@ -11,8 +11,8 @@ class TestModels(TestCase):
 
     def setUp(self):
         self.test_user = User(username="test", password="pass", email="test.user@email.com")
-        self.test_course = Course(course_num=351, semester="Fa", year=2023)
-
+        self.test_course = Course(course_num=351, semester="Fa", year=2023,
+                                  description="Data Structures and Algorithms")
         self.test_section = Section(course_num=self.test_course, section_num=401, section_type="Lec",
                                     section_is_on_monday=True, section_is_on_wednesday=True, section_start_time="09:30",
                                     section_end_time="10:30", location="EMS180")
@@ -58,8 +58,13 @@ class TestLogin(TestCase):
     def test_bad_login(self):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": "this is a bad password"})
-        self.assertEquals(resp.context["message"], "bad password",
+        self.assertEquals(resp.context["message"], "Incorrect password",
                           msg="Bad password message not shown upon bad login.")
+
+    def test_bad_username(self):
+        resp = self.test_client.post("/", {"username": "bad username", "password": self.test_user.password})
+        self.assertEquals(resp.context["message"], "Incorrect username",
+                          msg="Bad username message does not show with incorrect username")
 
 
 class TestDashboard(TestCase):

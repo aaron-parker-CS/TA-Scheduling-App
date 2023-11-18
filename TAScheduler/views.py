@@ -13,6 +13,8 @@ class Home(View):
 
     def post(self, request):
         username = request.POST["username"]
+        if not User.objects.filter(username=username).exists():
+            return render(request, "login.html", {"message": "Incorrect username"})
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
         if user is not None:
@@ -20,7 +22,7 @@ class Home(View):
             print("Logging in " + username)
             return redirect("dashboard/", {"user": user})
         else:
-            return render(request, "login.html", {"message": "bad password"})
+            return render(request, "login.html", {"message": "Incorrect password"})
 
 
 class Dashboard(View):

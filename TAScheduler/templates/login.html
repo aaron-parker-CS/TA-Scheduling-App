@@ -1,11 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
+    <div class="center">
+        {% load static %}
+        <img src="{% static '/UWM-logo.png' %}" class="uwm-logo" alt="UWM logo">
+    </div>
+    <div>
+        <h3 style="text-align: center">UWM Computer Science TA Scheduling</h3>
+    </div>
+    <br>
     <div>
         <form method="POST">
             {% csrf_token %}
@@ -19,13 +29,12 @@
                     <td><input type="password" name="password"></td>
                 </tr>
                 <tr>
-                    <td><a href="forgot-password.html">Forgot password</a></td>
                     <td><input type="submit" value="Login"></td>
                 </tr>
-                <tr>
-                    <td class="alert">{{ message }}</td>
-                </tr>
             </table>
+            <div class="container">
+                <p class="alert">{{ message }}</p>
+            </div>
         </form>
     </div>
 </body>
