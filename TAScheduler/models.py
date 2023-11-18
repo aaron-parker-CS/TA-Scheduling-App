@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -12,9 +13,11 @@ class Course(models.Model):
         ("Sp", "SPRING"),
         ("Wi", "WINTERIM")
     ]
-    course_num = models.IntegerField(primary_key=True)
+    course_num = models.IntegerField(primary_key=True, validators=[MaxValueValidator(999), MinValueValidator(100)])
     semester = models.CharField(max_length=2, choices=SEMESTER_CHOICES)
-    year = models.IntegerField(null=False)
+    year = models.IntegerField(null=False, validators=[MaxValueValidator(9999), MinValueValidator(2000)])
+    credits = models.IntegerField(null=False, default=1)
+    description = models.CharField(max_length=500, default="", null=False)
 
 
 class Section(models.Model):
@@ -25,7 +28,8 @@ class Section(models.Model):
         ("Dis", "DISCUSSION")
     ]
     course_num = models.ForeignKey('Course', on_delete=models.CASCADE)
-    section_num = models.IntegerField(null=False, default=0)
+    section_num = models.IntegerField(null=False, default=100,
+                                      validators=[MaxValueValidator(999), MinValueValidator(100)])
     section_type = models.CharField(max_length=3, choices=SECTION_CHOICES)
     section_is_on_monday = models.BooleanField(null=False, default=False)
     section_is_on_tuesday = models.BooleanField(null=False, default=False)

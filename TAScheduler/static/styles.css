@@ -2,6 +2,14 @@ label {
   font-family: Arial;
 }
 
+.uwm-logo {
+    height: 25%;
+    width: 50%;
+    padding: 10px;
+    display: flex;
+
+}
+
 a {
   font-family: Arial;
   font-size: 12px;
@@ -13,12 +21,13 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateX(50%);
 }
 
 .alert {
     font-family: Arial;
-    font-size: 24px;
-    font-color: red;
+    font-size: 20px;
+    color: red;
 }
 
 div {

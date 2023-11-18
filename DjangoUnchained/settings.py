@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'TAScheduler'
+    'TAScheduler.apps.TaschedulerConfig'
 ]
 
 MIDDLEWARE = [
@@ -67,6 +67,8 @@ TEMPLATES = [
         },
     },
 ]
+
+STATIC_URL = 'static/'
 
 WSGI_APPLICATION = 'DjangoUnchained.wsgi.application'
 
