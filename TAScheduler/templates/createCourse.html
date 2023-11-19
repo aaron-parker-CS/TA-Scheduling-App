@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Course</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
+</head>
+<body>
+    <div class="center">
+        {% load static %}
+        <img src="{% static '/UWM-logo.png' %}" class="uwm-logo" alt="UWM logo">
+    </div>
+    <div>
+        <h3 style="text-align: center">Create Course</h3>
+    </div>
+    <br>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="container">
+                <tr>
+                    <td><label for="course_num">Course Number:</label></td>
+                    <td><input type="number" name="course_num" placeholder="361"></td>
+                </tr>
+                <tr>
+                    <td><label for="semester">Semester:</label></td>
+                    <td>
+                       <select name="semester">
+                        {% for i in SEMESTER_CHOICES %}
+                            <option value="{{ i.1 }}">{{ i.0 }}</option>
+                        {% endfor %}
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="year">Year:</label></td>
+                    <td><input type="number" name="year" placeholder="E.g. 2023"></td>
+                </tr>
+                <tr>
+                    <td><label for="credits">Credits:</label></td>
+                    <td><input type="number" name="credits" placeholder="3"></td>
+                </tr>
+                <tr>
+                    <td><label for="description">Description:</label></td>
+                    <td><input type="text" name="description" placeholder="Type description here"></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Save"></td>
+                </tr>
+            </table>
+            <div class="container">
+                <p class="alert">{{ message }}</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

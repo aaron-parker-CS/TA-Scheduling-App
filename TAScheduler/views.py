@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Course, Section, User, UserAssignment
+from .models import Course, Section, User, UserAssignment, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
 
@@ -31,3 +31,9 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
         return render(request, "dashboard.html", {})
+
+class createCourse(View):
+    def get(self, request):
+        return render(request, "createCourse.html", {"SEMESTER_CHOICES":SEMESTER_CHOICES.choices})
+    def post(self, request):
+        return redirect('/')
