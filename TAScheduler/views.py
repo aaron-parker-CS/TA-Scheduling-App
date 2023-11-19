@@ -36,7 +36,7 @@ class Dashboard(View):
 class CreateAccount(View):
     def get(self, request):
         if not request.user.is_authenticated or not request.user.info.type == 'SU':
-            return render(request, 'dashboard.html', {'status_code': 403})
+            return render(request, 'dashboard.html', status=403)
         return render(request, 'create-account.html', {"types": Info.TYPE_CHOICES})
 
     def post(self, request):
@@ -46,12 +46,16 @@ class CreateAccount(View):
         if User.objects.filter(username=username).exists():
             return render(request, 'create-account.html', {'message': 'User already exists',
                                                            "types": Info.TYPE_CHOICES})
-        new_user = User.objects.create_user(username, email, password)
-        new_user.save()
+        try:
+            new_user = User.objects.create_user(username, email, password)
+            new_user.save()
+        except ValueError:
+            return render(request, 'create-account.html', {'message': 'Enter required fields.',
+                                                           'types': Info.TYPE_CHOICES})
         phone = request.POST['phone']
         address = request.POST['address']
-        type = request.POST['type']
-        info = Info(user=new_user, phone=phone, address=address, type=type)
+        type_chosen = request.POST['type']
+        info = Info(user=new_user, phone=phone, address=address, type=type_chosen)
         info.save()
         return render(request, 'create-account.html', {'message': 'Creation successful',
                                                        "types": Info.TYPE_CHOICES})

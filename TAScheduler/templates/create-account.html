@@ -7,9 +7,14 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
+    <div class="horizontal-center">
+        <button type="button" style="width: 100%" onclick="location.href='/dashboard/'">
+            Dashboard
+        </button>
+    </div>
     <form method="post">
         {% csrf_token %}
-            <table class="container">
+            <table class="container" style="padding: 10px">
                 <tr>
                     <td><label for="username">Username (ePanther ID):</label></td>
                     <td><input type="text" name="username"></td>
@@ -39,13 +44,14 @@
                     </select></td>
                 </tr>
                 <tr>
+                    <td></td>
                     <td><input type="submit" value="Create"></td>
+                </tr>
+                <tr>
+                    <td><p class="alert">{{ message }}</p></td>
                 </tr>
             </table>
             <br>
-            <div class="container">
-                <p class="alert">{{ message }}</p>
-            </div>
     </form>
 </body>
 </html>

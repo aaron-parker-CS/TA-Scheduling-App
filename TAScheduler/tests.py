@@ -124,3 +124,9 @@ class TestNewAccount(TestCase):
                                                           'type': 'TA'})
         self.assertEqual(resp.context['message'], 'User already exists',
                          msg='Duplicate user creation does not show the proper error message')
+
+    def test_null_values(self):
+        resp = self.test_client.post('/create-account/', {"username": '', "password": '', 'email': 'test',
+                                                          'phone': 'test', 'type': 'TA'})
+        self.assertEqual(resp.context['message'], 'Enter required fields.',
+                         msg='Null required values do not show the required error message.')
