@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Course, Section, User, UserAssignment
+from .models import Course, Section, User, UserAssignment, Info
 from django.contrib.auth import authenticate, login
 
 
@@ -31,3 +31,28 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
         return render(request, "dashboard.html", {})
+
+
+class CreateAccount(View):
+    def get(self, request):
+        if not request.user.is_authenticated or not request.user.info.type == 'SU':
+            return render(request, 'dashboard.html', {'status_code': 403})
+        return render(request, 'create-account.html', {"types": Info.TYPE_CHOICES})
+
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        email = request.POST['email']
+        if User.objects.filter(username=username).exists():
+            return render(request, 'create-account.html', {'message': 'User already exists'})
+        new_user = User(username=username, password=password, email=email)
+        new_user.save()
+        phone = request.POST['phone']
+        address = request.POST['address']
+        type = request.POST['type']
+        info = Info(user=new_user, phone=phone, address=address, type=type)
+        info.save()
+        return render(request, 'create-account.html', {'message': 'Creation successful'})
+
+
+
