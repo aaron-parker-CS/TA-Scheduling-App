@@ -6,15 +6,15 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+class SEMESTER_CHOICES(models.TextChoices):
+    Fa="Fall"
+    Su="Summer"
+    Sp="Spring"
+    Wi="Winterim"
+
 class Course(models.Model):
-    SEMESTER_CHOICES = [
-        ("Fa", "FALL"),
-        ("Su", "SUMMER"),
-        ("Sp", "SPRING"),
-        ("Wi", "WINTERIM")
-    ]
     course_num = models.IntegerField(primary_key=True, validators=[MaxValueValidator(999), MinValueValidator(100)])
-    semester = models.CharField(max_length=2, choices=SEMESTER_CHOICES)
+    semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES.choices, default=SEMESTER_CHOICES.Fa)
     year = models.IntegerField(null=False, validators=[MaxValueValidator(9999), MinValueValidator(2000)])
     credits = models.IntegerField(null=False, default=1)
     description = models.CharField(max_length=500, default="", null=False)

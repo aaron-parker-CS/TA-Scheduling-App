@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
+<<<<<<< HEAD
 from .models import Course, Section, User, UserAssignment, Info
+=======
+from .models import Course, Section, User, UserAssignment, SEMESTER_CHOICES
+>>>>>>> 1ef32f534c4c50be2d394e651170a63e649f7239
 from django.contrib.auth import authenticate, login
 
 
@@ -32,6 +36,7 @@ class Dashboard(View):
             return redirect('/')
         return render(request, "dashboard.html", {})
 
+<<<<<<< HEAD
 
 class CreateAccount(View):
     def get(self, request):
@@ -61,4 +66,8 @@ class CreateAccount(View):
                                                        "types": Info.TYPE_CHOICES})
 
 
-
+class createCourse(View):
+    def get(self, request):
+        return render(request, "createCourse.html", {"SEMESTER_CHOICES":SEMESTER_CHOICES.choices})
+    def post(self, request):
+        return redirect('/')
