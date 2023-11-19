@@ -44,15 +44,17 @@ class CreateAccount(View):
         password = request.POST["password"]
         email = request.POST['email']
         if User.objects.filter(username=username).exists():
-            return render(request, 'create-account.html', {'message': 'User already exists'})
-        new_user = User(username=username, password=password, email=email)
+            return render(request, 'create-account.html', {'message': 'User already exists',
+                                                           "types": Info.TYPE_CHOICES})
+        new_user = User.objects.create_user(username, email, password)
         new_user.save()
         phone = request.POST['phone']
         address = request.POST['address']
         type = request.POST['type']
         info = Info(user=new_user, phone=phone, address=address, type=type)
         info.save()
-        return render(request, 'create-account.html', {'message': 'Creation successful'})
+        return render(request, 'create-account.html', {'message': 'Creation successful',
+                                                       "types": Info.TYPE_CHOICES})
 
 
 
