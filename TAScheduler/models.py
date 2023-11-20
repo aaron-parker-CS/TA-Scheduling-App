@@ -41,6 +41,25 @@ class Section(models.Model):
     location = models.CharField(max_length=20, null=False)
 
 
+class Info(models.Model):
+    '''
+    1-1 with the User model
+    Django recommended way of extending functionality of the User model
+    Usage:
+        user = User.objects.get(username="fred")
+        user_phone = user.Info.phone
+    '''
+    TYPE_CHOICES = [
+        ("SU", "Supervisor"),
+        ("IN", "Instructor"),
+        ("TA", "Teaching Assistant")
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=20, null=False, default="N/A")
+    address = models.CharField(max_length=20, null=False, default="N/A")
+    type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[2])
+
+
 class UserAssignment(models.Model):
     # M-N
     # A user may have many section assignments, a section may have more than one TA or lecturer assignment
