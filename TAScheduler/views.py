@@ -139,19 +139,16 @@ class createSection(def):
             return redirect('dashboard/')
         except ValidationError as ve:
             # Handle validation errors
-            return render(request, "createCourse.html", {
+            return render(request, "createSection.html", {
                 "message": "Validation Error: " + str(ve),
-                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
         except IntegrityError:
-            return render(request, "createCourse.html", {
-                "message": "Duplicate course number. Please use a unique number.",
-                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            return render(request, "createSection.html", {
+                "message": "Duplicate section number. Please use a unique number.",
             })
         except Exception as e:
-            return render(request, "createCourse.html", {
+            return render(request, "createSection.html", {
                 "message": str(e),
-                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
 
         
