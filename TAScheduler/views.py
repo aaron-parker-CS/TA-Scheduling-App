@@ -109,7 +109,8 @@ class createCourse(View):
 
 class createSection(def):
     def get(self, request):
-        return render(request, "createSection.html", {"SEMESTER_CHOICES": SEMESTER_CHOICES.choices})
+        return render(request, "createSection.html")
+        
     def post(self, request):
         course_num = request.POST.get('course_num')
         section_type = request.POST.get('section_type')
@@ -121,6 +122,40 @@ class createSection(def):
         section_start_time = request.POST.get('start_time')
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
+        #create section object
+        new_section = Section({course_num=course_num, 
+            section_type=section_type,section_is_on_friday=section_is_on_friday, 
+            section_is_on_thursday=section_is_on_thursday,
+            section_is_on_wednesday=section_is_on_wednesday,
+            section_is_on_tuesday=section_is_on_tuesday,
+            section_is_on_monday=section_is_on_monday,
+            section_start_time=section_start_time,
+            section_end_time=section_end_time,
+            location=location
+        try:
+            # Validate the section before saving
+            new_section.full_clean()
+            new_section.save()
+            return redirect('dashboard/')
+        except ValidationError as ve:
+            # Handle validation errors
+            return render(request, "createCourse.html", {
+                "message": "Validation Error: " + str(ve),
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
+        except IntegrityError:
+            return render(request, "createCourse.html", {
+                "message": "Duplicate course number. Please use a unique number.",
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
+        except Exception as e:
+            return render(request, "createCourse.html", {
+                "message": str(e),
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
+
+        
+            
         
         
         
