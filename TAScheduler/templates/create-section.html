@@ -36,13 +36,12 @@
                     <label><input type="checkbox" name="friday"> Friday</label></td>
                 </tr>
                 <tr>
-                    <td><label for="semester">Semester:</label></td>
+                    <td><label for="section_type">Section Type:</label></td>
+                    <label><input type="checkbox" name="lab"> Wednesday</label>
+                    <label><input type="checkbox" name="lecture"> Thursday</label>
+                    <label><input type="checkbox" name="friday"> Friday</label
                     <td>
-                       <select name="semester">
-                        {% for i in SEMESTER_CHOICES %}
-                            <option value="{{ i.1 }}">{{ i.0 }}</option>
-                        {% endfor %}
-                    </select>
+                    
                     </td>
                 </tr>
                 <tr>
