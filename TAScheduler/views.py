@@ -106,3 +106,21 @@ class createCourse(View):
                 "message": str(e),
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
+
+class createSection(def):
+    def get(self, request):
+        return render(request, "createSection.html", {"SEMESTER_CHOICES": SEMESTER_CHOICES.choices})
+    def post(self, request):
+        course_num = request.POST.get('course_num')
+        section_type = request.POST.get('section_type')
+        section_is_on_friday = request.POST.get('friday')
+        section_is_on_thursday = request.POST.get('thursday')
+        section_is_on_wednesday = request.POST.get('wednesday')
+        section_is_on_tuesday = request.POST.get('tuesday')
+        section_is_on_monday = request.POST.get('monday')
+        section_start_time = request.POST.get('start_time')
+        section_end_time = request.POST.get('end_time')
+        location = request.POST.get('location')
+        
+        
+        
