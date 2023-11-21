@@ -123,7 +123,7 @@ class createSection(def):
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
         #create section object
-        new_section = Section({course_num=course_num, 
+        new_section = Section(course_num=course_num, 
             section_type=section_type,section_is_on_friday=section_is_on_friday, 
             section_is_on_thursday=section_is_on_thursday,
             section_is_on_wednesday=section_is_on_wednesday,
@@ -131,7 +131,7 @@ class createSection(def):
             section_is_on_monday=section_is_on_monday,
             section_start_time=section_start_time,
             section_end_time=section_end_time,
-            location=location
+            location=location)
         try:
             # Validate the section before saving
             new_section.full_clean()
