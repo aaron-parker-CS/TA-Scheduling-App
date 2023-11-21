@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -67,4 +69,40 @@ class createCourse(View):
         return render(request, "createCourse.html", {"SEMESTER_CHOICES": SEMESTER_CHOICES.choices})
 
     def post(self, request):
-        return redirect('/')
+        course_num = request.POST.get('course_num')
+        semester = request.POST.get('semester')
+        year = request.POST.get('year')
+        description = request.POST.get('description')
+
+        credits = request.POST.get('credits', 1)
+
+        # Creating a new course instance but not saving it yet
+        new_course = Course(
+            course_num=course_num,
+            semester=semester,
+            year=year,
+            credits=credits,
+            description=description
+        )
+
+        try:
+            # Validate the course before saving
+            new_course.full_clean()
+            new_course.save()
+            return redirect('dashboard/')
+        except ValidationError as ve:
+            # Handle validation errors
+            return render(request, "createCourse.html", {
+                "message": "Validation Error: " + str(ve),
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
+        except IntegrityError:
+            return render(request, "createCourse.html", {
+                "message": "Duplicate course number. Please use a unique number.",
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
+        except Exception as e:
+            return render(request, "createCourse.html", {
+                "message": str(e),
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
