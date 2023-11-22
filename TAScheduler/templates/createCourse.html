@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-    <div class="center">
-        {% load static %}
-        <img src="{% static '/UWM-logo.png' %}" class="uwm-logo" alt="UWM logo">
+    <div class="horizontal-center">
+        <button type="button" style="width: 100%" onclick="location.href='/dashboard/'">
+            Dashboard
+        </button>
     </div>
     <div>
         <h3 style="text-align: center">Create Course</h3>
@@ -46,7 +47,10 @@
                     <td><input type="text" name="description" placeholder="Type description here"></td>
                 </tr>
                 <tr>
-                    <td><input type="submit" value="Save"></td>
+                    <td><button class="back" type="button" onclick="location.href='/dashboard/'">
+        Back
+    </button></td>
+                    <td><input type="submit" value="Create"></td>
                 </tr>
             </table>
             <div class="container">
