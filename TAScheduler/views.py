@@ -106,3 +106,14 @@ class createCourse(View):
                 "message": str(e),
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
+
+
+class DeleteAccount(View):
+
+    def get(self, request):
+        return render(request, "DeleteAccount.html", {})
+
+    def post(self, request):
+        users = User.objects.all()
+        context = {"users": users}
+        return render(request, "DeleteAccount.html", context)
