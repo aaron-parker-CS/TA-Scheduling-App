@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, Client
+from django.urls import reverse
+
 from .models import User, UserAssignment, Course, Section, Info, SEMESTER_CHOICES
 from django.db import IntegrityError, DataError
 
@@ -118,7 +120,7 @@ class TestNewAccount(TestCase):
                                                           'type': 'TA'})
         new_id = User.objects.get(username='test.account')
         self.assertNotEquals(None, Info.objects.get(user=new_id),
-                         msg="User was created without an info model assigned to it.")
+                             msg="User was created without an info model assigned to it.")
 
     def test_user_already_exists(self):
         resp = self.test_client.post('/create-account/', {"username": self.test_user.username, "password": "test",
@@ -132,6 +134,7 @@ class TestNewAccount(TestCase):
                                                           'phone': 'test', 'type': 'TA'})
         self.assertEqual(resp.context['message'], 'Enter required fields.',
                          msg='Null required values do not show the required error message.')
+
 
 class CreateCourseTest(TestCase):
     def setUp(self):
@@ -215,7 +218,8 @@ class CreateCourseTest(TestCase):
             'description': "Test Course Default Credits"
         })
         self.assertEqual(response.status_code, 302, msg="Failed to set default credits value.")
-        self.assertTrue(Course.objects.filter(course_num=108, credits=1).exists(), msg="Course with default credits does not exist.")
+        self.assertTrue(Course.objects.filter(course_num=108, credits=1).exists(),
+                        msg="Course with default credits does not exist.")
 
     def test_duplicate_course_number(self):
         """
@@ -223,4 +227,40 @@ class CreateCourseTest(TestCase):
         """
         self.client.post('/dashboard/createCourse/', {'course_num': 104, 'year': 2023, 'credits': 3})
         response = self.client.post('/dashboard/createCourse/', {'course_num': 104, 'year': 2024, 'credits': 4})
-        self.assertNotEqual(response.status_code, 404, msg="Expected a different status code for duplicate course number.")
+        self.assertNotEqual(response.status_code, 404,
+                            msg="Expected a different status code for duplicate course number.")
+
+
+class DeleteCourseTest(TestCase):
+    def setUp(self):
+        self.course = Course.objects.create(course_num=101, semester='Fa', year=2023, credits=3,
+                                            description='Test Course')
+        self.delete_course_url = reverse('delete_course', args=[self.course.pk])
+
+    def test_delete_course_success(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertEqual(response.status_code, 302, msg="Failed to delete a course.")
+        self.assertFalse(Course.objects.filter(course_num=101).exists(), msg="Course still exists after deletion.")
+
+    def test_delete_nonexistent_course(self):
+        non_existent_course_pk = 9999
+        delete_non_existent_course_url = reverse('delete_course', args=[non_existent_course_pk])
+        response = self.client.post(delete_non_existent_course_url)
+        self.assertEqual(response.status_code, 404, msg="Expected a 404 response for deleting a nonexistent course.")
+
+    def test_redirect_after_deletion(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertRedirects(response, reverse('dashboard-view'), status_code=302,
+                             target_status_code=200, fetch_redirect_response=True)
+
+    def test_delete_course_count(self):
+        initial_course_count = Course.objects.count()
+        response = self.client.post(self.delete_course_url)
+        final_course_count = Course.objects.count()
+        self.assertEqual(final_course_count, initial_course_count - 1,
+                         msg="Course count did not decrease after deletion.")
+
+    def test_course_not_found_after_deletion(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertFalse(Course.objects.filter(id=self.course.pk).exists(),
+                         msg="Course should not exist after deletion.")
