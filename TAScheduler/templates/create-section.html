@@ -21,8 +21,13 @@
             {% csrf_token %}
             <table class="container">
                 <tr> 
-                    <td><label for="course_num">Course Number:</label></td>
-                    <td><input type="number" name="course_num" placeholder="361"></td>
+                     <td><label for="accountDropdown">Select Course Number:</label>
+        <select name="course_num" id="courseDropdown">
+            {% for course in courses %}
+                <option value="{{ course.course_num }}">{{ course.course_num }}</option>
+            {% endfor %}
+                </select>
+                </td>
                 </tr>
                 <tr>
                     <td><label for="section_num">Section Number:</label></td>
@@ -42,11 +47,9 @@
                     <label><input type="checkbox" name="lecture"> Lecture</label>
                     <label><input type="checkbox" name="discussion"> Discussion</label>
                     </td>
-                    
+
                     </td>
                 </tr>
-               
-                
                 <tr>
                     <td><input type="submit" value="Save"></td>
                 </tr>
