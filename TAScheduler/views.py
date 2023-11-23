@@ -109,7 +109,6 @@ class createCourse(View):
 
 
 class DeleteAccount(View):
-    class DeleteAccount(View):
 
     def get(self, request):
         users = User.objects.all()
