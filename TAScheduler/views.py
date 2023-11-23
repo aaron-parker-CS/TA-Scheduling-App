@@ -107,12 +107,17 @@ class createCourse(View):
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
 
-class createSection(def):
+class createSection(View):
     def get(self, request):
-        return render(request, "createSection.html")
+        courses = list(Course.objects.all())
+
+        context = {"courses": courses}
+        return render(request, "create-section.html", context)
         
     def post(self, request):
+        courses = Course.objects.all()
         course_num = request.POST.get('course_num')
+        course = Course.objects.filter(course_num=course_num)
         section_type = request.POST.get('section_type')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
@@ -139,15 +144,15 @@ class createSection(def):
             return redirect('dashboard/')
         except ValidationError as ve:
             # Handle validation errors
-            return render(request, "createSection.html", {
+            return render(request, "create-section.html", {
                 "message": "Validation Error: " + str(ve),
             })
         except IntegrityError:
-            return render(request, "createSection.html", {
+            return render(request, "create-section.html", {
                 "message": "Duplicate section number. Please use a unique number.",
             })
         except Exception as e:
-            return render(request, "createSection.html", {
+            return render(request, "create-section.html", {
                 "message": str(e),
             })
 
