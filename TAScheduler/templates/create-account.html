@@ -7,11 +7,7 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-    <div class="horizontal-center">
-        <button type="button" style="width: 100%" onclick="location.href='/dashboard/'">
-            Dashboard
-        </button>
-    </div>
+    <h3 class="form-title">Create Account</h3>
     <form method="post">
         {% csrf_token %}
             <table class="container" style="padding: 10px">
