@@ -107,6 +107,26 @@ class createCourse(View):
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
 
+class DeleteAccount(View):
+
+    def get(self, request):
+        users = User.objects.all()
+        context = {"users": users}
+        return render(request, "DeleteAccount.html", context)
+
+    def post(self, request):
+        selected_user_id = request.POST.get('userId')
+        #delete user
+        try:
+            user_to_delete = User.objects.get(id=selected_user_id)
+            user_to_delete.delete()
+            message = f"Account '{user_to_delete.username}' deleted successfully."
+        except User.DoesNotExist:
+            message = "User not found."
+        users = User.objects.all()
+        context = {"users": users}
+        return render(request, "DeleteAccount.html", context)
+
 class createSection(View):
     def get(self, request):
         courses = list(Course.objects.all())
@@ -161,3 +181,4 @@ class createSection(View):
         
         
         
+
