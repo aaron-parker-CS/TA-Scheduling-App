@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from DjangoUnchained import settings
-from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse
+from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, createSection
 from django.contrib.auth.views import LogoutView
 
 
