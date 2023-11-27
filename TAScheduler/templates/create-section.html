@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Course</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
+</head>
+<body>
+    <div class="center">
+        {% load static %}
+        <img src="{% static '/UWM-logo.png' %}" class="uwm-logo" alt="UWM logo">
+    </div>
+    <div>
+        <h3 style="text-align: center">Create Section</h3>
+    </div>
+    <br>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="container">
+                <tr> 
+                     <td><label for="accountDropdown">Select Course Number:</label>
+        <select name="course_num" id="courseDropdown">
+            {% for course in courses %}
+                <option value="{{ course.course_num }}">{{ course.course_num }}</option>
+            {% endfor %}
+                </select>
+                </td>
+                </tr>
+                <tr>
+                    <td><label for="section_num">Section Number:</label></td>
+                    <td><input type="number" name="section" placeholder="000"></td>
+                </tr>
+                <tr>
+                  <td><label><input type="checkbox" name="monday"> Monday</label>
+                    <label><input type="checkbox" name="tuesday"> Tuesday</label>
+                    <label><input type="checkbox" name="wednesday"> Wednesday</label>
+                    <label><input type="checkbox" name="thursday"> Thursday</label>
+                    <label><input type="checkbox" name="friday"> Friday</label></td>
+                </tr>
+                <tr>
+                    <td>
+                    <label for="section_type">Section Type:</label>
+                    <label><input type="checkbox" name="lab"> Lab</label>
+                    <label><input type="checkbox" name="lecture"> Lecture</label>
+                    <label><input type="checkbox" name="discussion"> Discussion</label>
+                    </td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Save"></td>
+                </tr>
+            </table>
+            <div class="container">
+                <p class="alert">{{ message }}</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

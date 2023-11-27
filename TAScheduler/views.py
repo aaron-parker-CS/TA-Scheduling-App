@@ -106,3 +106,79 @@ class createCourse(View):
                 "message": str(e),
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
+
+class DeleteAccount(View):
+
+    def get(self, request):
+        users = User.objects.all()
+        context = {"users": users}
+        return render(request, "DeleteAccount.html", context)
+
+    def post(self, request):
+        selected_user_id = request.POST.get('userId')
+        #delete user
+        try:
+            user_to_delete = User.objects.get(id=selected_user_id)
+            user_to_delete.delete()
+            message = f"Account '{user_to_delete.username}' deleted successfully."
+        except User.DoesNotExist:
+            message = "User not found."
+        users = User.objects.all()
+        context = {"users": users}
+        return render(request, "DeleteAccount.html", context)
+
+class createSection(View):
+    def get(self, request):
+        courses = list(Course.objects.all())
+
+        context = {"courses": courses}
+        return render(request, "create-section.html", context)
+        
+    def post(self, request):
+        courses = Course.objects.all()
+        course_num = request.POST.get('course_num')
+        course = Course.objects.filter(course_num=course_num)
+        section_type = request.POST.get('section_type')
+        section_is_on_friday = request.POST.get('friday')
+        section_is_on_thursday = request.POST.get('thursday')
+        section_is_on_wednesday = request.POST.get('wednesday')
+        section_is_on_tuesday = request.POST.get('tuesday')
+        section_is_on_monday = request.POST.get('monday')
+        section_start_time = request.POST.get('start_time')
+        section_end_time = request.POST.get('end_time')
+        location = request.POST.get('location')
+        #create section object
+        new_section = Section(course_num=course_num, 
+            section_type=section_type,section_is_on_friday=section_is_on_friday, 
+            section_is_on_thursday=section_is_on_thursday,
+            section_is_on_wednesday=section_is_on_wednesday,
+            section_is_on_tuesday=section_is_on_tuesday,
+            section_is_on_monday=section_is_on_monday,
+            section_start_time=section_start_time,
+            section_end_time=section_end_time,
+            location=location)
+        try:
+            # Validate the section before saving
+            new_section.full_clean()
+            new_section.save()
+            return redirect('dashboard/')
+        except ValidationError as ve:
+            # Handle validation errors
+            return render(request, "create-section.html", {
+                "message": "Validation Error: " + str(ve),
+            })
+        except IntegrityError:
+            return render(request, "create-section.html", {
+                "message": "Duplicate section number. Please use a unique number.",
+            })
+        except Exception as e:
+            return render(request, "create-section.html", {
+                "message": str(e),
+            })
+
+        
+            
+        
+        
+        
+

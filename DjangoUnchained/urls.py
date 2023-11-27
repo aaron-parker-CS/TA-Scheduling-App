@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from DjangoUnchained import settings
-from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse
+from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection
 from django.contrib.auth.views import LogoutView
 
 
@@ -27,6 +27,8 @@ urlpatterns = [
     path('', Home.as_view(), name="main-view"),
     path('dashboard/', Dashboard.as_view(), name="dashboard-view"),
     path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
-    path('create-account/', CreateAccount.as_view(), name='create-account-view'), # 127.0.0.1/create-account/
-    path('create-course/', createCourse.as_view(), name="createCourse-view"),
+    path('create-account/', CreateAccount.as_view(), name='create-account-view'),
+    path('createCourse/', createCourse.as_view(), name="createCourse-view"),
+    path('DeleteAccount/', DeleteAccount.as_view(), name="DeleteAccount-view"),
+    path('createSection/', createSection.as_view(), name="createSection-view")
 ]
