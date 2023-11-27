@@ -29,6 +29,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
     path('createAccount/', CreateAccount.as_view(), name='create-account-view'),
     path('createCourse/', createCourse.as_view(), name="createCourse-view"),
-    path('DeleteAccount/', DeleteAccount.as_view(), name="DeleteAccount-view"),
+    path('deleteAccount/', DeleteAccount.as_view(), name="DeleteAccount-view"),
     path('createSection/', createSection.as_view(), name="createSection-view")
 ]
