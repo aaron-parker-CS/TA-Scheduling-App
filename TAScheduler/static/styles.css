@@ -2,6 +2,14 @@ label {
   font-family: Arial;
 }
 
+.dashboard-button {
+    padding: 10px;
+	font-size: 16px;
+	background: goldenrod;
+    width: 16%;
+    margin-bottom: 10px;
+}
+
 .uwm-logo {
     height: 25%;
     width: 50%;
@@ -24,6 +32,14 @@ a {
     transform: translateX(50%);
 }
 
+.form-title {
+    text-align: center;
+    font-family: "Arial Black";
+    font-size: 20px;
+    color: black;
+    background: goldenrod;
+}
+
 .alert {
     font-family: Arial;
     font-size: 20px;
@@ -35,17 +51,29 @@ div {
   max-width: 100%;
 }
 .container {
-  display: grid;
-  place-items: center;
-  height: 8em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 td {
   padding: 5px;
 }
 
+tr {
+    padding: 5px;
+}
+
 .horizontal-center {
   margin: auto;
   width: 50%;
   padding: 10px;
+}
+
+button {
+    width: 100%;
+}
+
+input {
+    width: 100%;
 }
