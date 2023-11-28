@@ -164,7 +164,7 @@ class createSection(View):
             context = {"courses": list(Course.objects.all()), "message": "Validation error: Section_num lies outside of range (100,1000)."}
             render(request, "create-section.html", context)
         # check for duplicate error.
-        context = {courses, "message": "Error: Duplicate Course Section."}
+        context = {"courses": courses, "message": "Error: Duplicate Course Section."}
         for i in sections:
             if i.section_num == section_num:
                 render(request, "create-section.html", context)
