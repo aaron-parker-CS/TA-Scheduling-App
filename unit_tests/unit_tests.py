@@ -101,7 +101,7 @@ class TestNewAccount(TestCase):
         self.user_info.save()
 
     def test_create_account(self):
-        resp = self.test_client.post('/create-account/', {"username": "test.account", "password": "test",
+        resp = self.test_client.post('/createAccount/', {"username": "test.account", "password": "test",
                                                           'email': 'test', 'phone': 'test', 'address': 'test',
                                                           'type': 'TA'})
         self.assertEqual(resp.context["message"], 'Creation successful',
@@ -111,11 +111,11 @@ class TestNewAccount(TestCase):
 
     def test_no_admin_redirect(self):
         self.test_user.info.type = self.test_user.info.TYPE_CHOICES[2]
-        resp = self.test_client.get('/create-account/')
+        resp = self.test_client.get('/createAccount/')
         self.assertEqual(resp.status_code, 403, msg="Forbidden message not given to non-admin user.")
 
     def test_user_created_with_info(self):
-        resp = self.test_client.post('/create-account/', {"username": "test.account", "password": "test",
+        resp = self.test_client.post('/createAccount/', {"username": "test.account", "password": "test",
                                                           'email': 'test', 'phone': 'test', 'address': 'test',
                                                           'type': 'TA'})
         new_id = User.objects.get(username='test.account')
@@ -123,14 +123,14 @@ class TestNewAccount(TestCase):
                              msg="User was created without an info model assigned to it.")
 
     def test_user_already_exists(self):
-        resp = self.test_client.post('/create-account/', {"username": self.test_user.username, "password": "test",
+        resp = self.test_client.post('/createAccount/', {"username": self.test_user.username, "password": "test",
                                                           'email': 'test', 'phone': 'test', 'address': 'test',
                                                           'type': 'TA'})
         self.assertEqual(resp.context['message'], 'User already exists',
                          msg='Duplicate user creation does not show the proper error message')
 
     def test_null_values(self):
-        resp = self.test_client.post('/create-account/', {"username": '', "password": '', 'email': 'test',
+        resp = self.test_client.post('/createAccount/', {"username": '', "password": '', 'email': 'test',
                                                           'phone': 'test', 'type': 'TA'})
         self.assertEqual(resp.context['message'], 'Enter required fields.',
                          msg='Null required values do not show the required error message.')
@@ -144,9 +144,9 @@ class CreateCourseTest(TestCase):
         """
         Test successful creation of a course through POST request
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 101,
-            'semester': SEMESTER_CHOICES.Fa,
+            'semester': 'Fa',
             'year': 2023,
             'credits': 3,
             'description': "Intro to Testing"
@@ -158,7 +158,7 @@ class CreateCourseTest(TestCase):
         """
         Test course number validation (must be between 100 and 999) through POST request
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 99,  # Invalid course number
             'year': 2023,
             'credits': 3
@@ -170,7 +170,7 @@ class CreateCourseTest(TestCase):
         """
         Test course number validation for a number too high.
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 1000,  # Invalid course number
             'year': 2023,
             'credits': 3,
@@ -183,9 +183,9 @@ class CreateCourseTest(TestCase):
         """
         Test year validation for a year too low (before 2000).
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 106,
-            'semester': SEMESTER_CHOICES.Fa,
+            'semester': 'Fa',
             'year': 1999,  # Invalid year
             'credits': 3,
             'description': "Test Course Early Year"
@@ -197,9 +197,9 @@ class CreateCourseTest(TestCase):
         """
         Test year validation for a year too high (after 9999).
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 107,
-            'semester': SEMESTER_CHOICES.Fa,
+            'semester': 'Fa',
             'year': 10000,  # Invalid year
             'credits': 3,
             'description': "Test Course Future Year"
@@ -211,12 +211,13 @@ class CreateCourseTest(TestCase):
         """
         Test that the default value of credits is 1 if not specified.
         """
-        response = self.client.post('/dashboard/createCourse/', {
+        response = self.client.post('/createCourse/', {
             'course_num': 108,
-            'semester': SEMESTER_CHOICES.Fa,
+            'semester': 'Fa',
             'year': 2023,
             'description': "Test Course Default Credits"
         })
+        print(response.content.decode())
         self.assertEqual(response.status_code, 302, msg="Failed to set default credits value.")
         self.assertTrue(Course.objects.filter(course_num=108, credits=1).exists(),
                         msg="Course with default credits does not exist.")
@@ -225,8 +226,8 @@ class CreateCourseTest(TestCase):
         """
         Test that creating a course with a duplicate course number through POST request is handled
         """
-        self.client.post('/dashboard/createCourse/', {'course_num': 104, 'year': 2023, 'credits': 3})
-        response = self.client.post('/dashboard/createCourse/', {'course_num': 104, 'year': 2024, 'credits': 4})
+        self.client.post('/createCourse/', {'course_num': 104, 'year': 2023, 'credits': 3})
+        response = self.client.post('/createCourse/', {'course_num': 104, 'year': 2024, 'credits': 4})
         self.assertNotEqual(response.status_code, 404,
                             msg="Expected a different status code for duplicate course number.")
 

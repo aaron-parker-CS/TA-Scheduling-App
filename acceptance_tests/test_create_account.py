@@ -12,7 +12,7 @@ class AccountCreationTest(TestCase):
 
     def test_successful_account_creation(self):
         # Test creating an account with valid data.
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "newuser",
             "password": "newpassword",
             "email": "newuser@example.com",
@@ -27,7 +27,7 @@ class AccountCreationTest(TestCase):
         Test creating an account with a duplicate username.
         """
         User.objects.create_user(username="existinguser", password="password123")
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "existinguser",  # Duplicate username
             "password": "newpassword",
             "email": "newuser@example.com",
@@ -42,7 +42,7 @@ class AccountCreationTest(TestCase):
         """
         Test creating an account with empty required fields.
         """
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "",
             "password": "",
             "email": "",
@@ -54,7 +54,7 @@ class AccountCreationTest(TestCase):
                       msg="Empty required fields should trigger a validation error message.")
 
     def test_account_creation_with_non_duplicate_non_empty_email(self):
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "newuser",
             "password": "newpassword123",
             "email": "invalidemailformat",
@@ -66,7 +66,7 @@ class AccountCreationTest(TestCase):
                       msg="Account should be created with non-empty, non-duplicate email.")
 
     def test_account_creation_non_empty_username(self):
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "",
             "password": "newpassword123",
             "email": "newuser@example.com",
@@ -78,7 +78,7 @@ class AccountCreationTest(TestCase):
                       msg="Account creation with an empty username should be rejected.")
 
     def test_account_creation_valid_unique_username(self):
-        response = self.client.post('/create-account/', {
+        response = self.client.post('/createAccount/', {
             "username": "uniqueuser",
             "password": "newpassword123",
             "email": "uniqueuser@example.com",
