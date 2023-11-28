@@ -143,7 +143,8 @@ class createSection(View):
     def get(self, request):
         courses = list(Course.objects.all())
 
-
+        self.course_list = []
+        
         for course in courses:
             self.course_list.append((course, course.__str__()))
 
