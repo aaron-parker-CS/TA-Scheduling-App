@@ -264,3 +264,63 @@ class DeleteCourseTest(TestCase):
         response = self.client.post(self.delete_course_url)
         self.assertFalse(Course.objects.filter(id=self.course.pk).exists(),
                          msg="Course should not exist after deletion.")
+
+class CreateSectionTest(TestCase):
+     def setUp(self):
+        self.client = Client()
+        self.create_section_url = reverse("createSection")
+
+    def test_create_section_success(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 401,
+            'course_num': 101,
+            'section_type': "dis"
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",
+        })
+        self.assertEqual(response.status_code, 302, msg="Failed to create a section successfully.")
+        
+    def test_create_section_lab(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 401,
+            'course_num': 101,
+            'section_type': "dis"
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",
+        })
+        self.assertEqual(response.status_code, 302, msg="Failed to create a section successfully.")
+
+    def test_section_number_validation(self):
+        """ Test section number validation (must be between 100 and 999) through POST request """
+        response = self.client.post(self.create_section_url, {
+            'section_num': 99,
+        })
+        self.assertNotEqual(response.status_code, 404, msg="Expected a different status code, got 404.")
+        self.assertTrue(Course.objects.filter(section_num=99).exists(), msg="Section with invalid number exists.")
+
+    def test_section_number_validation_high(self):
+        """ Test section number validation for a number too high. """
+        response = self.client.post('createSection/', {
+            'section_num': 1000,
+        })
+        self.assertEqual(response.status_code, 200, msg="Failed to handle high section number properly.")
+        self.assertFalse(Course.objects.filter(course_num=1000).exists(), msg="Section with high number exists.")
+
+    def test_duplicate_course_number(self):
+        """ Test that creating a section with a duplicate course number through POST request is handled """
+        response = self.client.post(self.create_section_url, {'section_num': 401,})
+        self.assertNotEqual(response.status_code, 404, msg="Expected a different status code for duplicate course number.")
+
+    def test_create_section_lecture(self):
+        pass
+    def test_create_section_no_account_num(self):
+        pass
+    
+    
+    
