@@ -8,12 +8,9 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-    <div class="center">
-        {% load static %}
-        <img src="{% static '/UWM-logo.png' %}" class="uwm-logo" alt="UWM logo">
-    </div>
-    <div>
-        <h3 style="text-align: center">Create Section</h3>
+
+    <div class="horizontal-center">
+        <h3 class="form-title">Create Section</h3>
     </div>
     <br>
     <div>
@@ -21,12 +18,13 @@
             {% csrf_token %}
             <table class="container">
                 <tr> 
-                     <td><label for="accountDropdown">Select Course Number:</label>
-        <select name="course_num" id="courseDropdown">
-            {% for course in courses %}
-                <option value="{{ course.course_num }}">{{ course.course_num }}</option>
-            {% endfor %}
-                </select>
+                    <td><label for="accountDropdown">Course Number:</label></td>
+                <td>
+                    <select style="width: 100%" name="course_num" id="courseDropdown">
+                        {% for course in courses %}
+                            <option value="{{ course.course_num }}">{{ course.course_num }}</option>
+                        {% endfor %}
+                            </select>
                 </td>
                 </tr>
                 <tr>
@@ -34,23 +32,44 @@
                     <td><input type="number" name="section" placeholder="000"></td>
                 </tr>
                 <tr>
-                  <td><label><input type="checkbox" name="monday"> Monday</label>
-                    <label><input type="checkbox" name="tuesday"> Tuesday</label>
-                    <label><input type="checkbox" name="wednesday"> Wednesday</label>
-                    <label><input type="checkbox" name="thursday"> Thursday</label>
-                    <label><input type="checkbox" name="friday"> Friday</label></td>
+                    <td><label>Monday</label></td>
+                    <td><input type="checkbox" name="monday"></td>
+                </tr>
+                <tr>
+                    <td><label>Tuesday</label></td>
+                    <td><input type="checkbox" name="tuesday"></td>
+                </tr>
+                <tr>
+                    <td><label>Wednesday</label></td>
+                    <td><input type="checkbox" name="wednesday"></td>
+                </tr>
+                <tr>
+                    <td><label>Thursday</label></td>
+                    <td><input type="checkbox" name="thursday"> </td>
+                </tr>
+                <tr>
+                    <td><label>Friday</label></td>
+                    <td><input type="checkbox" name="friday"></td>
                 </tr>
                 <tr>
                     <td>
-                    <label for="section_type">Section Type:</label>
-                    <label><input type="checkbox" name="lab"> Lab</label>
-                    <label><input type="checkbox" name="lecture"> Lecture</label>
-                    <label><input type="checkbox" name="discussion"> Discussion</label>
-                    </td>
-
+                        <h4 style="font-weight: bold; font-family: Arial">Section Type:<h2>
                     </td>
                 </tr>
                 <tr>
+                    <td><label>Lab</label></td>
+                    <td><input type="checkbox" name="lab"> </td>
+                </tr>
+                <tr>
+                    <td><label>Lecture</label></td>
+                    <td><input type="checkbox" name="lecture"> </td>
+                </tr>
+                <tr>
+                    <td><label>Discussion</label></td>
+                    <td><input type="checkbox" name="discussion"></td>
+                </tr>
+                <tr>
+                    <td><button class="back" type="button" onclick="location.href='/dashboard/'">Back</button></td>
                     <td><input type="submit" value="Save"></td>
                 </tr>
             </table>
