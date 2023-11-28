@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from .models import User, UserAssignment, Course, Section, Info, SEMESTER_CHOICES
+from TAScheduler.models import User, UserAssignment, Course, Section, Info, SEMESTER_CHOICES
 from django.db import IntegrityError, DataError
 
 
