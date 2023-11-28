@@ -149,7 +149,7 @@ class createSection(View):
         location = request.POST.get('location')
     
         # create section object as long as section number lies in range 100-1000 non-inclusive.
-        if section_num > 100 && section_num < 1000:
+        if 100 < section_num < 1000:
             new_section = Section(course_num=course_num, 
                 section_type=section_type,
                 section_is_on_friday=section_is_on_friday, 
