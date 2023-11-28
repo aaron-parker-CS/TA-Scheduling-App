@@ -137,6 +137,7 @@ class createSection(View):
     def post(self, request):
         courses = Course.objects.all()
         course_num = request.POST.get('course_num')
+        sections = Section.objects.filter(course_num=course_num)
         course = Course.objects.filter(course_num=course_num)
         section_type = request.POST.get('section_type')
         section_is_on_friday = request.POST.get('friday')
@@ -147,9 +148,11 @@ class createSection(View):
         section_start_time = request.POST.get('start_time')
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
+    
         #create section object
         new_section = Section(course_num=course_num, 
-            section_type=section_type,section_is_on_friday=section_is_on_friday, 
+            section_type=section_type,
+            section_is_on_friday=section_is_on_friday, 
             section_is_on_thursday=section_is_on_thursday,
             section_is_on_wednesday=section_is_on_wednesday,
             section_is_on_tuesday=section_is_on_tuesday,
@@ -157,6 +160,10 @@ class createSection(View):
             section_start_time=section_start_time,
             section_end_time=section_end_time,
             location=location)
+        context = {courses, "message": "Error: Duplicate Course Section."}
+        for i in sections:
+            if i.section_num == section_num:
+                render(request, "create-section.html", context)
         try:
             # Validate the section before saving
             new_section.full_clean()
