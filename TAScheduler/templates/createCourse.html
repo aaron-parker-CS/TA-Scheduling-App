@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-    <h3 class="form-title">Create Course</h3>
+    <div class="horizontal-center">
+        <h3 class="form-title">Create Course</h3>
+    </div>
     <div>
         <form method="POST">
             {% csrf_token %}

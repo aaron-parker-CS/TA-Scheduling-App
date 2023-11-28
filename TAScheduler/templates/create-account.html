@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-    <h3 class="form-title">Create Account</h3>
+    <div class="horizontal-center">
+        <h3 class="form-title">Create Account</h3>
+    </div>
     <form method="post">
         {% csrf_token %}
             <table class="container" style="padding: 10px">

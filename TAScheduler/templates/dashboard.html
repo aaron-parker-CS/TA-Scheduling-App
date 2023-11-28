@@ -2,30 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Supervisor Main Menu</title>
+    <title>Supervisor Dashboard</title>
     {% load static %}
     <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
 
 <div class="container">
-    <button type="button" class="dashboard-button" onclick="location.href='/create-account/'">
+    <button type="button" class="dashboard-button" onclick="location.href='/createAccount/'">
         <strong>Create Account</strong>
     </button>
 
-    <button type="button" onclick="location.href='/createCourse/'">
-        Create Course
+    <button type="button"  class="dashboard-button"onclick="location.href='/createCourse/'">
+        <strong>Create Course</strong>
     </button>
 
-    <button type="button" onclick="location.href='/create-section/'>
-        Create Section
+    <button type="button" class="dashboard-button" onclick="location.href='/createSection/'">
+        <strong>Create Section</strong>
     </button>
 
-    <button type="button" onclick="location.href='/DeleteAccount/'">
-        Delete Account
+    <button type="button" class="dashboard-button" onclick="location.href='/deleteAccount/'">
+        <strong>Delete Account</strong>
     </button>
 
-    <button type="button" class="dashboard-button" onclick="location.href='https://google.com'">
+    <button type="button"  class="dashboard-button" onclick="location.href='https://google.com'">
         Send Notification
     </button>
 
@@ -33,11 +33,11 @@
         Edit Account
     </button>
 
-    <button type="button" class="dashboard-button" onclick="location.href='https://google.com'">
+    <button type="button" class="dashboard-button"  onclick="location.href='https://google.com'">
         Read Public Contact Info
     </button>
 
-    <button type="button" class="dashboard-button" onclick="location.href='https://google.com'">
+    <button type="button"  class="dashboard-button" onclick="location.href='https://google.com'">
         Edit Contact Info
     </button>
 
