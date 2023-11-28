@@ -130,7 +130,6 @@ class DeleteAccount(View):
 class createSection(View):
     def get(self, request):
         courses = list(Course.objects.all())
-
         context = {"courses": courses}
         return render(request, "create-section.html", context)
         
@@ -149,17 +148,22 @@ class createSection(View):
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
     
-        #create section object
-        new_section = Section(course_num=course_num, 
-            section_type=section_type,
-            section_is_on_friday=section_is_on_friday, 
-            section_is_on_thursday=section_is_on_thursday,
-            section_is_on_wednesday=section_is_on_wednesday,
-            section_is_on_tuesday=section_is_on_tuesday,
-            section_is_on_monday=section_is_on_monday,
-            section_start_time=section_start_time,
-            section_end_time=section_end_time,
-            location=location)
+        # create section object as long as section number lies in range 100-1000 non-inclusive.
+        if section_num > 100 && section_num < 1000:
+            new_section = Section(course_num=course_num, 
+                section_type=section_type,
+                section_is_on_friday=section_is_on_friday, 
+                section_is_on_thursday=section_is_on_thursday,
+                section_is_on_wednesday=section_is_on_wednesday,
+                section_is_on_tuesday=section_is_on_tuesday,
+                section_is_on_monday=section_is_on_monday,
+                section_start_time=section_start_time,
+                section_end_time=section_end_time,
+                location=location)
+        else:
+            context = {"courses": list(Course.objects.all()), "message": "Validation error: Section_num lies outside of range (100,1000)."}
+            render(request, "create-section.html", context)
+        # check for duplicate error.
         context = {courses, "message": "Error: Duplicate Course Section."}
         for i in sections:
             if i.section_num == section_num:
