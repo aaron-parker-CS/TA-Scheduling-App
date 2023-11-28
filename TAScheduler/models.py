@@ -27,6 +27,9 @@ class Course(models.Model):
     credits = models.IntegerField(null=False, default=1)
     description = models.CharField(max_length=500, default="", null=False)
 
+    def __str__(self):
+        return str(self.course_num) + ': ' + str(self.semester) + str(self.year)
+
 
 class Section(models.Model):
     # A course has 1-to-many sections
