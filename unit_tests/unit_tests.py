@@ -272,9 +272,9 @@ class CreateSectionTest(TestCase):
 
     def test_create_section_success(self):
         response = self.client.post(self.create_section_url, {
-            'section_num': 401,
+            'section_num': 399,
             'course_num': 101,
-            'section_type': "dis"
+            'section_type': "discussion",
             'section_is_on_tuesday': True,
             'section_is_on_thursday': True,
             'section_start_time': "11:30",
@@ -282,12 +282,13 @@ class CreateSectionTest(TestCase):
             'location': "EMS",
         })
         self.assertEqual(response.status_code, 302, msg="Failed to create a section successfully.")
-        
+        self.assertTrue(Course.objects.filter(course_num=101, section_num=399).exists(), msg="Section with high number exists.")
+    
     def test_create_section_lab(self):
         response = self.client.post(self.create_section_url, {
             'section_num': 401,
             'course_num': 101,
-            'section_type': "dis"
+            'section_type': "lab",
             'section_is_on_tuesday': True,
             'section_is_on_thursday': True,
             'section_start_time': "11:30",
@@ -295,32 +296,80 @@ class CreateSectionTest(TestCase):
             'location': "EMS",
         })
         self.assertEqual(response.status_code, 302, msg="Failed to create a section successfully.")
+        self.assertTrue(Course.objects.filter(course_num=101, section_num=401).exists(), msg="Section not present in database.")
 
-    def test_section_number_validation(self):
+    def test_section_number_validation_low(self):
         """ Test section number validation (must be between 100 and 999) through POST request """
         response = self.client.post(self.create_section_url, {
             'section_num': 99,
+            'course_num': 101,
+            'section_type': "discussion",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",
         })
         self.assertNotEqual(response.status_code, 404, msg="Expected a different status code, got 404.")
-        self.assertTrue(Course.objects.filter(section_num=99).exists(), msg="Section with invalid number exists.")
+        self.assertFalse(Course.objects.filter(section_num=99).exists(), msg="Section with invalid number exists.")
 
     def test_section_number_validation_high(self):
         """ Test section number validation for a number too high. """
-        response = self.client.post('createSection/', {
+        response = self.client.post(self.create_section_url, {
             'section_num': 1000,
+            'course_num': 101,
+            'section_type': "lecture",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",
+            
         })
         self.assertEqual(response.status_code, 200, msg="Failed to handle high section number properly.")
         self.assertFalse(Course.objects.filter(course_num=1000).exists(), msg="Section with high number exists.")
 
+    def test_missing_required_fields(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 402,
+            'course_num': 101,
+            'section_type': "discussion",
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            # Missing 'section_start_time', 'section_end_time', and 'location'
+    })
+    self.assertEqual(response.status_code, 200, msg="Expected a validation error, got another status code.")
+    self.assertIn('error', response.context, msg="Expected 'error' in response context.")
+    self.assertIn('form', response.context, msg="Expected 'form' in response context.")
+
     def test_duplicate_course_number(self):
         """ Test that creating a section with a duplicate course number through POST request is handled """
-        response = self.client.post(self.create_section_url, {'section_num': 401,})
-        self.assertNotEqual(response.status_code, 404, msg="Expected a different status code for duplicate course number.")
+        # Create a section with course number 401
+        self.client.post(self.create_section_url, {
+            'course_num': 401,
+            'section_num': 101,
+            'section_type': "lecture",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",
+            })
 
-    def test_create_section_lecture(self):
-        pass
-    def test_create_section_no_account_num(self):
-        pass
+        # Attempt to create another section with the same course number (401)
+        response = self.client.post(self.create_section_url, {
+            'course_num': 401,
+            'section_num': 101,
+            'section_type': "discussion",
+            'section_is_on_thursday': True,
+            'section_is_on_friday': True,
+            'section_start_time': "11:30",
+            'section_end_time': "11:30",
+            'location': "EMS",})
+
+        # Check that the response status code is not 404 and contains an error message
+        self.assertNotEqual(response.status_code, 404, msg="Expected a different status code for duplicate course number.")
+        self.assertIn('error', response.content.decode(), msg="Expected error message in response content for duplicate course number.")
     
     
     
