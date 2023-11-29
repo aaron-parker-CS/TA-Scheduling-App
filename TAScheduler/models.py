@@ -7,17 +7,28 @@ from django.contrib.auth.models import User
 
 
 class SEMESTER_CHOICES(models.TextChoices):
-    Fa="Fall"
-    Su="Summer"
-    Sp="Spring"
-    Wi="Winterim"
+    Fa = "Fall"
+    Su = "Summer"
+    Sp = "Spring"
+    Wi = "Winterim"
+
 
 class Course(models.Model):
+    SEMESTER_CHOICES = [
+        ('Fa', 'Fall'),
+        ('Su', 'Summer'),
+        ('Sp', 'Spring'),
+        ('Wi', 'Winterim')
+    ]
+
     course_num = models.IntegerField(primary_key=True, validators=[MaxValueValidator(999), MinValueValidator(100)])
-    semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES.choices, default=SEMESTER_CHOICES.Fa)
+    semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES, default=SEMESTER_CHOICES[0])
     year = models.IntegerField(null=False, validators=[MaxValueValidator(9999), MinValueValidator(2000)])
     credits = models.IntegerField(null=False, default=1)
     description = models.CharField(max_length=500, default="", null=False)
+
+    def __str__(self):
+        return str(self.course_num) + ': ' + str(self.semester) + str(self.year)
 
 
 class Section(models.Model):

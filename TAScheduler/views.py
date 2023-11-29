@@ -16,9 +16,13 @@ class Home(View):
 
     def post(self, request):
         username = request.POST["username"]
+        if username is None or username == '':
+            return render(request, 'login.html', {'message': 'This field is required.'})
         if not User.objects.filter(username=username).exists():
             return render(request, "login.html", {"message": "Incorrect username"})
         password = request.POST["password"]
+        if password is None or password == '':
+            return render(request, 'login.html', {'message': 'This field is required.'})
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -73,8 +77,17 @@ class createCourse(View):
         semester = request.POST.get('semester')
         year = request.POST.get('year')
         description = request.POST.get('description')
+        credits = request.POST.get('credits')
 
-        credits = request.POST.get('credits', 1)
+        # TODO: Find a better fix. Keep in mind that these POST responses return empty strings if the textbox is
+        #  empty, not None.
+        credits = 1 if credits == '' or credits is None else credits
+
+        if Course.objects.filter(course_num=course_num, semester=semester, year=year).exists():
+            return render(request, "createCourse.html", {
+                "message": "Duplicate course number. Please use a unique number.",
+                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
+            })
 
         # Creating a new course instance but not saving it yet
         new_course = Course(
@@ -89,16 +102,11 @@ class createCourse(View):
             # Validate the course before saving
             new_course.full_clean()
             new_course.save()
-            return redirect('dashboard/')
+            return redirect('/dashboard/')
         except ValidationError as ve:
             # Handle validation errors
             return render(request, "createCourse.html", {
                 "message": "Validation Error: " + str(ve),
-                "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
-            })
-        except IntegrityError:
-            return render(request, "createCourse.html", {
-                "message": "Duplicate course number. Please use a unique number.",
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
         except Exception as e:
@@ -106,6 +114,7 @@ class createCourse(View):
                 "message": str(e),
                 "SEMESTER_CHOICES": SEMESTER_CHOICES.choices
             })
+
 
 class DeleteAccount(View):
 
@@ -116,7 +125,7 @@ class DeleteAccount(View):
 
     def post(self, request):
         selected_user_id = request.POST.get('userId')
-        #delete user
+        # delete user
         try:
             user_to_delete = User.objects.get(id=selected_user_id)
             user_to_delete.delete()
@@ -127,18 +136,32 @@ class DeleteAccount(View):
         context = {"users": users}
         return render(request, "DeleteAccount.html", context)
 
+
 class createSection(View):
+    course_list = []
+
     def get(self, request):
         courses = list(Course.objects.all())
 
-        context = {"courses": courses}
-        return render(request, "create-section.html", context)
+        self.course_list = []
         
+        for course in courses:
+            self.course_list.append((course, course.__str__()))
+
+        context = {"courses": self.course_list, "types": Section.SECTION_CHOICES}
+        return render(request, "create-section.html", context)
+
     def post(self, request):
         courses = Course.objects.all()
         course_num = request.POST.get('course_num')
-        course = Course.objects.filter(course_num=course_num)
-        section_type = request.POST.get('section_type')
+
+        course = None
+        for item in courses:
+            if item.__str__() == course_num:
+                course = item
+
+        section_type = request.POST.get('type')
+        section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
         section_is_on_wednesday = request.POST.get('wednesday')
@@ -147,38 +170,44 @@ class createSection(View):
         section_start_time = request.POST.get('start_time')
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
-        #create section object
-        new_section = Section(course_num=course_num, 
-            section_type=section_type,section_is_on_friday=section_is_on_friday, 
-            section_is_on_thursday=section_is_on_thursday,
-            section_is_on_wednesday=section_is_on_wednesday,
-            section_is_on_tuesday=section_is_on_tuesday,
-            section_is_on_monday=section_is_on_monday,
-            section_start_time=section_start_time,
-            section_end_time=section_end_time,
-            location=location)
+        # create section object
+        section_is_on_friday = False if section_is_on_friday is None else True
+        section_is_on_thursday = False if section_is_on_thursday is None else True
+        section_is_on_wednesday = False if section_is_on_wednesday is None else True
+        section_is_on_tuesday = False if section_is_on_tuesday is None else True
+        section_is_on_monday = False if section_is_on_monday is None else True
+
+        new_section = Section(course_num=course,
+                              section_num=section_num,
+                              section_type=section_type, section_is_on_friday=section_is_on_friday,
+                              section_is_on_thursday=section_is_on_thursday,
+                              section_is_on_wednesday=section_is_on_wednesday,
+                              section_is_on_tuesday=section_is_on_tuesday,
+                              section_is_on_monday=section_is_on_monday,
+                              section_start_time=section_start_time,
+                              section_end_time=section_end_time,
+                              location=location)
         try:
             # Validate the section before saving
             new_section.full_clean()
             new_section.save()
-            return redirect('dashboard/')
+            return redirect('/dashboard/')
         except ValidationError as ve:
             # Handle validation errors
             return render(request, "create-section.html", {
                 "message": "Validation Error: " + str(ve),
+                "courses": self.course_list,
+                "types": Section.SECTION_CHOICES
             })
         except IntegrityError:
             return render(request, "create-section.html", {
                 "message": "Duplicate section number. Please use a unique number.",
+                "courses": self.course_list,
+                "types": Section.SECTION_CHOICES
             })
         except Exception as e:
             return render(request, "create-section.html", {
                 "message": str(e),
+                "courses": self.course_list,
+                "types": Section.SECTION_CHOICES
             })
-
-        
-            
-        
-        
-        
-

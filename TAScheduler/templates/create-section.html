@@ -22,7 +22,7 @@
                 <td>
                     <select style="width: 100%" name="course_num" id="courseDropdown">
                         {% for course in courses %}
-                            <option value="{{ course.course_num }}">{{ course.course_num }}</option>
+                            <option value="{{ course.0 }}">{{ course.1 }}</option>
                         {% endfor %}
                             </select>
                 </td>
@@ -30,6 +30,18 @@
                 <tr>
                     <td><label for="section_num">Section Number:</label></td>
                     <td><input type="number" name="section" placeholder="000"></td>
+                </tr>
+                <tr>
+                    <td><label for="location">Location:</label></td>
+                    <td><input type="text" name="location" placeholder="EMS180"></td>
+                </tr>
+                <tr>
+                    <td><label for="start_time">Start time:</label></td>
+                    <td><input type="time" name="start_time" placeholder="00:00"></td>
+                </tr>
+                <tr>
+                    <td><label for="end_time">End time:</label></td>
+                    <td><input type="time" name="end_time" placeholder="00:00"></td>
                 </tr>
                 <tr>
                     <td><label>Monday</label></td>
@@ -52,24 +64,15 @@
                     <td><input type="checkbox" name="friday"></td>
                 </tr>
                 <tr>
-                    <td>
-                        <h4 style="font-weight: bold; font-family: Arial">Section Type:<h2>
-                    </td>
+                    <td><label for="type">Section type:</label></td>
+                    <td><select name="type" id="type">
+                        {% for type in types %}
+                            <option value="{{ type.0 }}">{{ type.1 }}</option>
+                        {% endfor %}
+                    </select></td>
                 </tr>
                 <tr>
-                    <td><label>Lab</label></td>
-                    <td><input type="checkbox" name="lab"> </td>
-                </tr>
-                <tr>
-                    <td><label>Lecture</label></td>
-                    <td><input type="checkbox" name="lecture"> </td>
-                </tr>
-                <tr>
-                    <td><label>Discussion</label></td>
-                    <td><input type="checkbox" name="discussion"></td>
-                </tr>
-                <tr>
-                    <td><button class="back" type="button" onclick="location.href='/dashboard/'">Back</button></td>
+                    <td><button class="back" type="button" onclick="document.location.href='/dashboard/'">Back</button></td>
                     <td><input type="submit" value="Save"></td>
                 </tr>
             </table>
