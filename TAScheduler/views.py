@@ -180,6 +180,10 @@ class createSection(View):
         context = {"courses":courses, "message": "Validation error"}
         if course_num == "None" or section_num == "None":
             render(request, "create-section.html",context)
+        context = {"courses": courses, "message": "Error: Duplicate Course Section."}
+        for i in sections:
+            if i.section_num == section_num:
+                render(request, "create-section.html", context)
         new_section = Section(course_num=course,
                               section_num=section_num,
                               section_type=section_type, section_is_on_friday=section_is_on_friday,
