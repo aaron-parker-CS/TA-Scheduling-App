@@ -177,6 +177,9 @@ class createSection(View):
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
 
+        context = {"courses":courses, "message": "Validation error"}
+        if course_num == "None" or section_num == "None":
+            render(request, "create-section.html",context)
         new_section = Section(course_num=course,
                               section_num=section_num,
                               section_type=section_type, section_is_on_friday=section_is_on_friday,
