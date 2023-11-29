@@ -40,5 +40,5 @@ class LoginAcceptanceTest(TestCase):
         """
         response = self.client.post("/", {"username": "", "password": ""})
         # You may need to adjust the expected message based on your application's validation messages.
-        self.assertEquals("This field is required.", response.context['message'],
+        self.assertEqual("This field is required.", response.context['message'],
                       msg="Validation error for empty fields should be displayed.")
