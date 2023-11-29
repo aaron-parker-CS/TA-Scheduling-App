@@ -159,7 +159,7 @@ class createSection(View):
         for item in courses:
             if item.__str__() == course_num:
                 course = item
-        sections = list(Section.get.all())
+        sections = list(Section.objects.filter(course_num=course_num)
         section_type = request.POST.get('type')
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
