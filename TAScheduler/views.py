@@ -140,25 +140,29 @@ class DeleteAccount(View):
 class createSection(View):
     course_list = []
 
-    def get(self, request):
+    def populate_course_list(self):
         courses = list(Course.objects.all())
-
-        self.course_list = []
-        
         for course in courses:
             self.course_list.append((course, course.__str__()))
+
+    def get(self, request):
+        if len(self.course_list) == 0:
+            self.populate_course_list()
 
         context = {"courses": self.course_list, "types": Section.SECTION_CHOICES}
         return render(request, "create-section.html", context)
 
     def post(self, request):
-        courses = Course.objects.all()
+        if len(self.course_list) == 0:
+            self.populate_course_list()
+
         course_num = request.POST.get('course_num')
 
-        course = None
-        for item in courses:
-            if item.__str__() == course_num:
-                course = item
+        for course in self.course_list:
+            if course[1] == course_num:
+                print(f'Match: {course[1]} to {course_num}')
+                course_num = course[0]
+                return render(request, "create-section.html", {"courses": self.course_list, "message": "duplicate error." })
 
         section_type = request.POST.get('type')
         section_num = request.POST.get('section')
@@ -177,7 +181,7 @@ class createSection(View):
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
 
-        new_section = Section(course_num=course,
+        new_section = Section(course_num=course_num,
                               section_num=section_num,
                               section_type=section_type, section_is_on_friday=section_is_on_friday,
                               section_is_on_thursday=section_is_on_thursday,
@@ -191,7 +195,11 @@ class createSection(View):
             # Validate the section before saving
             new_section.full_clean()
             new_section.save()
-            return redirect('/dashboard/')
+            return render(request, "create-section.html", {
+                "message": 'Creation successful',
+                "courses": self.course_list,
+                "types": Section.SECTION_CHOICES
+            })
         except ValidationError as ve:
             # Handle validation errors
             return render(request, "create-section.html", {
