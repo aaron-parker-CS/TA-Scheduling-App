@@ -38,7 +38,7 @@ class TestModels(TestCase):
         Section.objects.filter(id=self.test_section.id).delete()
         self.assertEqual(None, self.test_assignment.id,
                          "Assignment fails to cascade delete upon section deletion.")
-        self.assertNotEquals(None, self.test_course.course_num, "Course deletes upon selection deletion.")
+        self.assertNotEqual(None, self.test_course.course_num, "Course deletes upon selection deletion.")
 
 
 class TestLogin(TestCase):
@@ -57,17 +57,17 @@ class TestLogin(TestCase):
     def test_login(self):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": self.test_user.password})
-        self.assertEquals(resp.status_code, 200, msg="Login failed to give a correct response status")
+        self.assertEqual(resp.status_code, 200, msg="Login failed to give a correct response status")
 
     def test_bad_login(self):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": "this is a bad password"})
-        self.assertEquals(resp.context["message"], "Incorrect password",
+        self.assertEqual(resp.context["message"], "Incorrect password",
                           msg="Bad password message not shown upon bad login.")
 
     def test_bad_username(self):
         resp = self.test_client.post("/", {"username": "bad username", "password": self.test_user.password})
-        self.assertEquals(resp.context["message"], "Incorrect username",
+        self.assertEqual(resp.context["message"], "Incorrect username",
                           msg="Bad username message does not show with incorrect username")
 
 
@@ -106,7 +106,7 @@ class TestNewAccount(TestCase):
                                                           'type': 'TA'})
         self.assertEqual(resp.context["message"], 'Creation successful',
                          msg='Message not shown on account creation')
-        self.assertNotEquals(None, User.objects.get(username='test.account'), msg="User account not successfully "
+        self.assertNotEqual(None, User.objects.get(username='test.account'), msg="User account not successfully "
                                                                                   "created.")
 
     def test_no_admin_redirect(self):
@@ -119,7 +119,7 @@ class TestNewAccount(TestCase):
                                                           'email': 'test', 'phone': 'test', 'address': 'test',
                                                           'type': 'TA'})
         new_id = User.objects.get(username='test.account')
-        self.assertNotEquals(None, Info.objects.get(user=new_id),
+        self.assertNotEqual(None, Info.objects.get(user=new_id),
                              msg="User was created without an info model assigned to it.")
 
     def test_user_already_exists(self):
