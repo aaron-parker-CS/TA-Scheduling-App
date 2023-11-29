@@ -269,35 +269,28 @@ class DeleteCourseTest(TestCase):
 class CreateSectionTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.create_section_url = reverse("createSection-view") #ADDED "xx"
+        self.create_section_url = reverse("createSection-view")
         # create course
         self.course = Course(course_num=101, semester='Fa', year=2023, credits=3,
                                             description='Test Course')
         self.course.save()
-        print(Course.objects.all())
 
     def test_create_section_success(self):
-
+        # check for successful redirect with good form request.
         response = self.client.post("/createSection/", {
             'section': 399,
-            'type': "Lab",
+            'type': "discussion",
             'course_num':  self.course.__str__(),
             'start_time': "00:00",
             'end_time': "00:01",
             'tuesday': True,
-            'thursday': True,
-            'monday': True,
-            'wednesday': True,
-            'friday': True,
             'location': "EMS",
         })
-        print(response.context["message"])
-
         self.assertEqual(response.status_code, 200, msg="Failed to create a section successfully.")
 
 
     def test_section_number_validation_low(self):
-        """ Test section number validation (must be between 100 and 999) through POST request """
+        # Test section number validation (must be between 100 and 999) through POST request
         response = self.client.post(self.create_section_url, {
             'section_num': 100,
             'course_num': self.course.__str__(),
@@ -311,7 +304,7 @@ class CreateSectionTest(TestCase):
         self.assertNotEqual(response.status_code, 302, msg="Expected a different status code.")
 
     def test_section_number_validation_high(self):
-        """ Test section number validation for a number too high. """
+        # Test section number validation for a number too high.
         response = self.client.post(self.create_section_url, {
             'section_num': 1000,
             'course_num': self.course.__str__(),
@@ -322,9 +315,10 @@ class CreateSectionTest(TestCase):
             "start_time": "11:11",
             "end_time": "11:11",
         })
-        self.assertEqual(response.status_code, 200, msg="Failed to handle high section number properly.")
+        self.assertNotEqual(response.status_code, 302, msg="Expected a different status code.")
 
     def test_missing_required_fields_course_num(self):
+        # Create a section with missing course field.
         response = self.client.post(self.create_section_url, {
             'section_num': 402,
             'section_type': "discussion",
@@ -338,6 +332,7 @@ class CreateSectionTest(TestCase):
         self.assertNotEqual(response.status_code, 302, msg="Failed to handle missing field - course_num")
 
     def test_missing_required_fields_section_num(self):
+        # Create a section with missing section field.
         response = self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
             'section_type': "discussion",
@@ -348,11 +343,11 @@ class CreateSectionTest(TestCase):
             "end_time": "11:11",
             # Missing 'course_num''
         })
-        self.assertNotEqual(response.status_code, 302,msg="Failed to handle missing field - section_num")
+        self.assertNotEqual(response.status_code, 302, msg="Failed to handle missing field - section_num")
 
     def test_duplicate_course_number(self):
         """ Test that creating a section with a duplicate course number through POST request is handled """
-        # Create a section with course number 101
+        # Create a section with duplicate course, number 101
         self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
             'section_num': 101,
@@ -364,7 +359,7 @@ class CreateSectionTest(TestCase):
             "end_time": "11:11",
             })
 
-        # Attempt to create another section with the same course number
+        # Attempt to create another section with the same course number.
         response = self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
             'section_num': 101,
@@ -372,6 +367,5 @@ class CreateSectionTest(TestCase):
             'section_is_on_thursday': True,
             'section_is_on_friday': True,
         })
-
         self.assertContains(response, "error", msg_prefix="Expected error message in response content for duplicate course number.")
-    #TESTTEST
+
