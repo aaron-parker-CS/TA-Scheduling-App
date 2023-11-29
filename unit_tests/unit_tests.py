@@ -283,8 +283,8 @@ class CreateSectionTest(TestCase):
             'section_is_on_thursday': True,
         })
         self.assertEqual(response.status_code, 302, msg="Failed to create a section successfully.")
-        self.assertTrue(Section.objects.filter(course_num=101, section_num=399).exists(), msg="Section was not uploaded in database.")
-    
+        self.assertTrue(Section.objects.filter(course_num=101, section_num=399, section_type: "discussion", section_is_on_tuesday: True, section_is_on_thursday: True).exists(), msg="Section was not uploaded in database.")
+
     def test_section_number_validation_low(self):
         """ Test section number validation (must be between 100 and 999) through POST request """
         response = self.client.post(self.create_section_url, {
