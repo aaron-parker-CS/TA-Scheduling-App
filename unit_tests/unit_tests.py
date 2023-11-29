@@ -320,7 +320,8 @@ class CreateSectionTest(TestCase):
         self.assertNotEqual(response.status_code, 302)
         print(response.context)
         self.assertContains(response, "", msg_prefix="Expected 'validation error' in response context.")
-
+    def test_missing_required_fields_section_num(self):
+        pass
     def test_duplicate_course_number(self):
         """ Test that creating a section with a duplicate course number through POST request is handled """
         # Create a section with course number 101
