@@ -132,8 +132,8 @@ class DeleteAccount(View):
             message = f"Account '{user_to_delete.username}' deleted successfully."
         except User.DoesNotExist:
             message = "User not found."
-        users = User.objects.all()
-        context = {"users": users}
+        # Render the template with the appropriate context
+        context = {'message': message, 'users': User.objects.all()}
         return render(request, "DeleteAccount.html", context)
 
 
