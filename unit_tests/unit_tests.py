@@ -352,4 +352,4 @@ class CreateSectionTest(TestCase):
         })
 
         self.assertContains(response, "error", msg_prefix="Expected error message in response content for duplicate course number.")
-    
+    #TESTTEST
