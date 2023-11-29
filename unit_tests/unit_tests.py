@@ -304,6 +304,9 @@ class CreateSectionTest(TestCase):
             'section_type': "Dis",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
         })
         self.assertNotEqual(response.status_code, 302, msg="Expected a different status code.")
 
@@ -315,6 +318,9 @@ class CreateSectionTest(TestCase):
             'section_type': "lecture",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
         })
         self.assertEqual(response.status_code, 200, msg="Failed to handle high section number properly.")
 
@@ -324,13 +330,26 @@ class CreateSectionTest(TestCase):
             'section_type': "discussion",
             'section_is_on_tuesday': True,
             'section_is_on_thursday': True,
-            # Missing 'course_num''
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+            # Missing 'section_num''
         })
-        self.assertNotEqual(response.status_code, 302)
+        self.assertNotEqual(response.status_code, 302, msg="Failed to handle missing field - course_num")
 
     def test_missing_required_fields_section_num(self):
-        pass
-        
+        response = self.client.post(self.create_section_url, {
+            'course_num': self.course.__str__(),
+            'section_type': "discussion",
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+            # Missing 'course_num''
+        })
+        self.assertNotEqual(response.status_code, 302,msg="Failed to handle missing field - section_num")
+
     def test_duplicate_course_number(self):
         """ Test that creating a section with a duplicate course number through POST request is handled """
         # Create a section with course number 101
@@ -340,6 +359,9 @@ class CreateSectionTest(TestCase):
             'section_type': "lecture",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
             })
 
         # Attempt to create another section with the same course number
