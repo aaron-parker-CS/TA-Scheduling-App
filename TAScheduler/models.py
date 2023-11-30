@@ -52,8 +52,6 @@ class Section(models.Model):
     section_start_time = models.TimeField(null=False, default="00:00")
     section_end_time = models.TimeField(null=False, default="00:00")
     location = models.CharField(max_length=20, null=False)
-    def __str__(self):
-        return str(self.course3) + ': ' + str(self.semester) + str(self.year)
 
 
 class Info(models.Model):
