@@ -145,6 +145,7 @@ class createSection(View):
         for course in courses:
             if course not in self.course_list:
                 self.course_list.append((course, course.__str__()))
+        self.course_list.sort()
 
     def get(self, request):
 
