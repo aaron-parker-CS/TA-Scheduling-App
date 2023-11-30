@@ -56,3 +56,14 @@ class CreateCourseTest(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn("Validation Error:", response.content.decode())
+
+    def test_empty_description(self):
+        response = self.client.post('/createCourse/', {
+            'course_num': 370,
+            'semester': 'Fall',
+            'year': 2023,
+            'credits': 3,
+            'description': ''
+        })
+        self.assertIn("This field cannot be blank.", response.content.decode(),
+                      msg="An empty description should trigger a validation error.")
