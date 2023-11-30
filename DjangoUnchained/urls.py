@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
 from DjangoUnchained import settings
 from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection
 from django.contrib.auth.views import LogoutView
