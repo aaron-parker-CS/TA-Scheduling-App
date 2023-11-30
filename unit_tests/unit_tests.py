@@ -63,12 +63,12 @@ class TestLogin(TestCase):
         resp = self.test_client.post("/", {"username": self.test_user.username,
                                            "password": "this is a bad password"})
         self.assertEqual(resp.context["message"], "Incorrect password",
-                          msg="Bad password message not shown upon bad login.")
+                         msg="Bad password message not shown upon bad login.")
 
     def test_bad_username(self):
         resp = self.test_client.post("/", {"username": "bad username", "password": self.test_user.password})
         self.assertEqual(resp.context["message"], "Incorrect username",
-                          msg="Bad username message does not show with incorrect username")
+                         msg="Bad username message does not show with incorrect username")
 
 
 class TestDashboard(TestCase):
@@ -102,12 +102,12 @@ class TestNewAccount(TestCase):
 
     def test_create_account(self):
         resp = self.test_client.post('/createAccount/', {"username": "test.account", "password": "test",
-                                                          'email': 'test', 'phone': 'test', 'address': 'test',
-                                                          'type': 'TA'})
+                                                         'email': 'test', 'phone': 'test', 'address': 'test',
+                                                         'type': 'TA'})
         self.assertEqual(resp.context["message"], 'Creation successful',
                          msg='Message not shown on account creation')
         self.assertNotEqual(None, User.objects.get(username='test.account'), msg="User account not successfully "
-                                                                                  "created.")
+                                                                                 "created.")
 
     def test_no_admin_redirect(self):
         self.test_user.info.type = self.test_user.info.TYPE_CHOICES[2]
@@ -116,22 +116,22 @@ class TestNewAccount(TestCase):
 
     def test_user_created_with_info(self):
         resp = self.test_client.post('/createAccount/', {"username": "test.account", "password": "test",
-                                                          'email': 'test', 'phone': 'test', 'address': 'test',
-                                                          'type': 'TA'})
+                                                         'email': 'test', 'phone': 'test', 'address': 'test',
+                                                         'type': 'TA'})
         new_id = User.objects.get(username='test.account')
         self.assertNotEqual(None, Info.objects.get(user=new_id),
-                             msg="User was created without an info model assigned to it.")
+                            msg="User was created without an info model assigned to it.")
 
     def test_user_already_exists(self):
         resp = self.test_client.post('/createAccount/', {"username": self.test_user.username, "password": "test",
-                                                          'email': 'test', 'phone': 'test', 'address': 'test',
-                                                          'type': 'TA'})
+                                                         'email': 'test', 'phone': 'test', 'address': 'test',
+                                                         'type': 'TA'})
         self.assertEqual(resp.context['message'], 'User already exists',
                          msg='Duplicate user creation does not show the proper error message')
 
     def test_null_values(self):
         resp = self.test_client.post('/createAccount/', {"username": '', "password": '', 'email': 'test',
-                                                          'phone': 'test', 'type': 'TA'})
+                                                         'phone': 'test', 'type': 'TA'})
         self.assertEqual(resp.context['message'], 'Enter required fields.',
                          msg='Null required values do not show the required error message.')
 
@@ -232,39 +232,39 @@ class CreateCourseTest(TestCase):
                             msg="Expected a different status code for duplicate course number.")
 
 
-# class DeleteCourseTest(TestCase):
-#     def setUp(self):
-#         self.course = Course.objects.create(course_num=101, semester='Fa', year=2023, credits=3,
-#                                             description='Test Course')
-#         self.delete_course_url = reverse('delete_course', args=[self.course.pk])
-#
-#     def test_delete_course_success(self):
-#         response = self.client.post(self.delete_course_url)
-#         self.assertEqual(response.status_code, 302, msg="Failed to delete a course.")
-#         self.assertFalse(Course.objects.filter(course_num=101).exists(), msg="Course still exists after deletion.")
-#
-#     def test_delete_nonexistent_course(self):
-#         non_existent_course_pk = 9999
-#         delete_non_existent_course_url = reverse('delete_course', args=[non_existent_course_pk])
-#         response = self.client.post(delete_non_existent_course_url)
-#         self.assertEqual(response.status_code, 404, msg="Expected a 404 response for deleting a nonexistent course.")
-#
-#     def test_redirect_after_deletion(self):
-#         response = self.client.post(self.delete_course_url)
-#         self.assertRedirects(response, reverse('dashboard-view'), status_code=302,
-#                              target_status_code=200, fetch_redirect_response=True)
-#
-#     def test_delete_course_count(self):
-#         initial_course_count = Course.objects.count()
-#         response = self.client.post(self.delete_course_url)
-#         final_course_count = Course.objects.count()
-#         self.assertEqual(final_course_count, initial_course_count - 1,
-#                          msg="Course count did not decrease after deletion.")
-#
-#     def test_course_not_found_after_deletion(self):
-#         response = self.client.post(self.delete_course_url)
-#         self.assertFalse(Course.objects.filter(id=self.course.pk).exists(),
-#                          msg="Course should not exist after deletion.")
+class DeleteCourseTest(TestCase):
+    def setUp(self):
+        self.course = Course.objects.create(course_num=101, semester='Fa', year=2023, credits=3,
+                                            description='Test Course')
+        self.delete_course_url = reverse('delete_course', args=[self.course.pk])
+
+    def test_delete_course_success(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertEqual(response.status_code, 302, msg="Failed to delete a course.")
+        self.assertFalse(Course.objects.filter(course_num=101).exists(), msg="Course still exists after deletion.")
+
+    def test_delete_nonexistent_course(self):
+        non_existent_course_pk = 9999
+        delete_non_existent_course_url = reverse('delete_course', args=[non_existent_course_pk])
+        response = self.client.post(delete_non_existent_course_url)
+        self.assertEqual(response.status_code, 404, msg="Expected a 404 response for deleting a nonexistent course.")
+
+    def test_redirect_after_deletion(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertRedirects(response, reverse('dashboard-view'), status_code=302,
+                             target_status_code=200, fetch_redirect_response=True)
+
+    def test_delete_course_count(self):
+        initial_course_count = Course.objects.count()
+        response = self.client.post(self.delete_course_url)
+        final_course_count = Course.objects.count()
+        self.assertEqual(final_course_count, initial_course_count - 1,
+                         msg="Course count did not decrease after deletion.")
+
+    def test_course_not_found_after_deletion(self):
+        response = self.client.post(self.delete_course_url)
+        self.assertFalse(Course.objects.filter(id=self.course.pk).exists(),
+                         msg="Course should not exist after deletion.")
 
 class CreateSectionTest(TestCase):
     def setUp(self):
@@ -272,22 +272,23 @@ class CreateSectionTest(TestCase):
         self.create_section_url = reverse("createSection-view")
         # create course
         self.course = Course(course_num=101, semester='Fa', year=2023, credits=3,
-                                            description='Test Course')
+                             description='Test Course')
         self.course.save()
+        print(Course.objects.all())
+        print(self.course.id)
 
     def test_create_section_success(self):
         # check for successful redirect with good form request.
         response = self.client.post("/createSection/", {
             'section': 399,
             'type': "Dis",
-            'course_num':  self.course.__str__(),
+            'course_num': self.course.__str__(),
             'start_time': "00:00",
             'end_time': "00:01",
             'tuesday': True,
             'location': "EMS",
         })
         self.assertEqual(response.status_code, 200, msg="Failed to create a section successfully.")
-
 
     def test_section_number_validation_low(self):
         # Test section number validation (must be between 100 and 999) through POST request
@@ -357,7 +358,7 @@ class CreateSectionTest(TestCase):
             "location": "EMS",
             "start_time": "11:11",
             "end_time": "11:11",
-            })
+        })
 
         # Attempt to create another section with the same course number.
         response = self.client.post(self.create_section_url, {
