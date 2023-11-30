@@ -34,11 +34,27 @@ class LoginAcceptanceTest(TestCase):
         self.assertIn("Incorrect username", response.content.decode(),
                       msg="Incorrect username message should be displayed.")
 
-    def test_unsuccessful_login_empty_fields(self):
+    def test_login_empty_username(self):
         """
-        Test login with empty username and password fields.
+        Test login with empty username field.
+        """
+        response = self.client.post("/", {"username": "", "password": "testpassword123"})
+        self.assertIn("This field is required.", response.content.decode(),
+                      msg="Validation error for empty username should be displayed.")
+
+    def test_login_empty_password(self):
+        """
+        Test login with empty password field.
+        """
+        response = self.client.post("/", {"username": "testuser", "password": ""})
+        self.assertIn("This field is required.", response.content.decode(),
+                      msg="Validation error for empty password should be displayed.")
+
+    def test_login_empty_fields(self):
+        """
+        Test login with both username and password fields empty.
         """
         response = self.client.post("/", {"username": "", "password": ""})
-        # You may need to adjust the expected message based on your application's validation messages.
-        self.assertEquals("This field is required.", response.context['message'],
+        self.assertIn("This field is required.", response.content.decode(),
                       msg="Validation error for empty fields should be displayed.")
+
