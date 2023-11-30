@@ -156,13 +156,15 @@ class createSection(View):
         if len(self.course_list) == 0:
             self.populate_course_list()
 
-        course_num = request.POST.get('course_num')
+        course_id = request.POST.get('course_num')
+        courses = Course.objects.all()
 
-        for course in self.course_list:
-            if course[1] == course_num:
-                print(f'Match: {course[1]} to {course_num}')
-                course_num = course[0]
-                return render(request, "create-section.html", {"courses": self.course_list, "message": "duplicate error." })
+        courseObj = None
+        for i in courses:
+            if str(i.__str__()) == course_id:
+                courseObj = i
+                break
+
 
         section_type = request.POST.get('type')
         section_num = request.POST.get('section')
@@ -174,12 +176,17 @@ class createSection(View):
         section_start_time = request.POST.get('start_time')
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
-        # create section object
         section_is_on_friday = False if section_is_on_friday is None else True
         section_is_on_thursday = False if section_is_on_thursday is None else True
         section_is_on_wednesday = False if section_is_on_wednesday is None else True
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
+        course_num =
+        for course in self.course_list:
+            if course[1] == course_num.__str__():
+                print(f'Match: {course[1]} to {course_num}')
+                return render(request, "create-section.html", {"courses": self.course_list, "message": "duplicate error." })
+
 
         new_section = Section(course_num=course_num,
                               section_num=section_num,
