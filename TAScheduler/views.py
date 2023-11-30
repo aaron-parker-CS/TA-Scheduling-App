@@ -143,18 +143,20 @@ class createSection(View):
     def populate_course_list(self):
         courses = list(Course.objects.all())
         for course in courses:
-            self.course_list.append((course, course.__str__()))
+            if course not in self.course_list:
+                self.course_list.append((course, course.__str__()))
+        self.course_list.sort(key=str)
 
     def get(self, request):
-        if len(self.course_list) == 0:
-            self.populate_course_list()
+
+        self.populate_course_list()
 
         context = {"courses": self.course_list, "types": Section.SECTION_CHOICES}
         return render(request, "create-section.html", context)
 
     def post(self, request):
-        if len(self.course_list) == 0:
-            self.populate_course_list()
+
+        self.populate_course_list()
 
         course_id = request.POST.get('course_num')
         courses = Course.objects.all()
