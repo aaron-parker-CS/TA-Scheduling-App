@@ -181,23 +181,37 @@ class createSection(View):
         section_is_on_wednesday = False if section_is_on_wednesday is None else True
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
-        course_num =
+        new_section = None
+        try:
+            if courseObj != None:
+                sections = Section.objects.filter(course_num=courseObj.course_num)
+        except AttributeError as z:
+            return render(request, "create-section.html",
+                          {"courses": self.course_list, "message": "Validation Error"})
+
         for course in self.course_list:
-            if course[1] == course_num.__str__():
-                print(f'Match: {course[1]} to {course_num}')
-                return render(request, "create-section.html", {"courses": self.course_list, "message": "duplicate error." })
-
-
-        new_section = Section(course_num=course_num,
-                              section_num=section_num,
-                              section_type=section_type, section_is_on_friday=section_is_on_friday,
-                              section_is_on_thursday=section_is_on_thursday,
-                              section_is_on_wednesday=section_is_on_wednesday,
-                              section_is_on_tuesday=section_is_on_tuesday,
-                              section_is_on_monday=section_is_on_monday,
-                              section_start_time=section_start_time,
-                              section_end_time=section_end_time,
-                              location=location)
+            if course[1] == courseObj.__str__():
+                for j in sections:
+                    if j.section_num == courseObj.section_num:
+                        return render(request, "create-section.html",
+                                      {"courses": self.course_list, "message": "Duplicate Course Number"})
+        print(section_num)
+        print(section_num)
+        new_section = Section(
+            course_num=courseObj,
+            section_num=section_num,
+            section_type=section_type,
+            section_is_on_friday=section_is_on_friday,
+            section_is_on_thursday=section_is_on_thursday,
+            section_is_on_wednesday=section_is_on_wednesday,
+            section_is_on_tuesday=section_is_on_tuesday,
+            section_is_on_monday=section_is_on_monday,
+            section_start_time=section_start_time,
+            section_end_time=section_end_time,
+            location=location)
+        print("under")
+        # print(self.course_list)
+        print(":C")
         try:
             # Validate the section before saving
             new_section.full_clean()
@@ -209,8 +223,9 @@ class createSection(View):
             })
         except ValidationError as ve:
             # Handle validation errors
+            print(f"Validation Error: {ve.message_dict}")
             return render(request, "create-section.html", {
-                "message": "Validation Error: " + str(ve),
+                "message": "Validation Error",
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })
