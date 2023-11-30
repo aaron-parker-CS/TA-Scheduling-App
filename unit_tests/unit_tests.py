@@ -279,7 +279,7 @@ class CreateSectionTest(TestCase):
         # check for successful redirect with good form request.
         response = self.client.post("/createSection/", {
             'section': 399,
-            'type': "discussion",
+            'type': "Dis",
             'course_num':  self.course.__str__(),
             'start_time': "00:00",
             'end_time': "00:01",
@@ -292,9 +292,9 @@ class CreateSectionTest(TestCase):
     def test_section_number_validation_low(self):
         # Test section number validation (must be between 100 and 999) through POST request
         response = self.client.post(self.create_section_url, {
-            'section_num': 100,
+            'section': 100,
             'course_num': self.course.__str__(),
-            'section_type': "Dis",
+            'type': "Dis",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
             "location": "EMS",
@@ -306,9 +306,9 @@ class CreateSectionTest(TestCase):
     def test_section_number_validation_high(self):
         # Test section number validation for a number too high.
         response = self.client.post(self.create_section_url, {
-            'section_num': 1000,
+            'section': 1000,
             'course_num': self.course.__str__(),
-            'section_type': "lecture",
+            'type': "Dis",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
             "location": "EMS",
@@ -320,8 +320,8 @@ class CreateSectionTest(TestCase):
     def test_missing_required_fields_course_num(self):
         # Create a section with missing course field.
         response = self.client.post(self.create_section_url, {
-            'section_num': 402,
-            'section_type': "discussion",
+            'section': 402,
+            'type': "Dis",
             'section_is_on_tuesday': True,
             'section_is_on_thursday': True,
             "location": "EMS",
@@ -335,13 +335,13 @@ class CreateSectionTest(TestCase):
         # Create a section with missing section field.
         response = self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
-            'section_type': "discussion",
+            'type': "Dis",
             'section_is_on_tuesday': True,
             'section_is_on_thursday': True,
             "location": "EMS",
             "start_time": "11:11",
             "end_time": "11:11",
-            # Missing 'course_num''
+            # Missing 'section_num''
         })
         self.assertNotEqual(response.status_code, 302, msg="Failed to handle missing field - section_num")
 
@@ -350,8 +350,8 @@ class CreateSectionTest(TestCase):
         # Create a section with duplicate course, number 101
         self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
-            'section_num': 101,
-            'section_type': "lecture",
+            'section': 101,
+            'type': "Dis",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
             "location": "EMS",
@@ -362,10 +362,13 @@ class CreateSectionTest(TestCase):
         # Attempt to create another section with the same course number.
         response = self.client.post(self.create_section_url, {
             'course_num': self.course.__str__(),
-            'section_num': 101,
-            'section_type': "discussion",
-            'section_is_on_thursday': True,
-            'section_is_on_friday': True,
+            'section': 101,
+            'type': "Dis",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
         })
-        self.assertContains(response, "error", msg_prefix="Expected error message in response content for duplicate course number.")
-
+        print(response.content.decode())
+        self.assertContains(response, "Duplicate Course Number")

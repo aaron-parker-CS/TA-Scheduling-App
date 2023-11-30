@@ -132,8 +132,8 @@ class DeleteAccount(View):
             message = f"Account '{user_to_delete.username}' deleted successfully."
         except User.DoesNotExist:
             message = "User not found."
-        users = User.objects.all()
-        context = {"users": users}
+        # Render the template with the appropriate context
+        context = {'message': message, 'users': User.objects.all()}
         return render(request, "DeleteAccount.html", context)
 
 
@@ -156,15 +156,17 @@ class createSection(View):
         if len(self.course_list) == 0:
             self.populate_course_list()
 
-        course_num = request.POST.get('course_num')
+        course_id = request.POST.get('course_num')
+        courses = Course.objects.all()
 
-        for course in self.course_list:
-            if course[1] == course_num:
-                print(f'Match: {course[1]} to {course_num}')
-                course_num = course[0]
-                return render(request, "create-section.html", {"courses": self.course_list, "message": "duplicate error." })
+        courseObj = None
+        for i in courses:
+            if str(i.__str__()) == course_id:
+                courseObj = i
+                break
 
         section_type = request.POST.get('type')
+        print(section_type)
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
@@ -174,23 +176,42 @@ class createSection(View):
         section_start_time = request.POST.get('start_time')
         section_end_time = request.POST.get('end_time')
         location = request.POST.get('location')
-        # create section object
         section_is_on_friday = False if section_is_on_friday is None else True
         section_is_on_thursday = False if section_is_on_thursday is None else True
         section_is_on_wednesday = False if section_is_on_wednesday is None else True
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
+        new_section = None
+        try:
+            if courseObj != None:
+                sections = Section.objects.filter(course_num=courseObj.course_num)
 
-        new_section = Section(course_num=course_num,
-                              section_num=section_num,
-                              section_type=section_type, section_is_on_friday=section_is_on_friday,
-                              section_is_on_thursday=section_is_on_thursday,
-                              section_is_on_wednesday=section_is_on_wednesday,
-                              section_is_on_tuesday=section_is_on_tuesday,
-                              section_is_on_monday=section_is_on_monday,
-                              section_start_time=section_start_time,
-                              section_end_time=section_end_time,
-                              location=location)
+            for course in self.course_list:
+                if course[1] == courseObj.__str__():
+                    for j in sections:
+                        if j.section_num == courseObj.section_num:
+                            return render(request, "create-section.html",
+                                      {"courses": self.course_list, "message": "Duplicate Course Number"})
+        except AttributeError as z:
+            return render(request, "create-section.html",
+                          {"courses": self.course_list, "message": "Duplicate Course Number"})
+        print(section_num)
+        print(section_num)
+        new_section = Section(
+            course_num=courseObj,
+            section_num=section_num,
+            section_type=section_type,
+            section_is_on_friday=section_is_on_friday,
+            section_is_on_thursday=section_is_on_thursday,
+            section_is_on_wednesday=section_is_on_wednesday,
+            section_is_on_tuesday=section_is_on_tuesday,
+            section_is_on_monday=section_is_on_monday,
+            section_start_time=section_start_time,
+            section_end_time=section_end_time,
+            location=location)
+        print("under")
+        # print(self.course_list)
+        print(":C")
         try:
             # Validate the section before saving
             new_section.full_clean()
@@ -202,14 +223,15 @@ class createSection(View):
             })
         except ValidationError as ve:
             # Handle validation errors
+            print(f"Validation Error: {ve.message_dict}")
             return render(request, "create-section.html", {
-                "message": "Validation Error: " + str(ve),
+                "message": "Validation Error",
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })
         except IntegrityError:
             return render(request, "create-section.html", {
-                "message": "Duplicate section number. Please use a unique number.",
+                "message": "Duplicate Course Number",
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })
