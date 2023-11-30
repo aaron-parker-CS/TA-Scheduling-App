@@ -165,8 +165,8 @@ class createSection(View):
                 courseObj = i
                 break
 
-
         section_type = request.POST.get('type')
+        print(section_type)
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
@@ -185,16 +185,16 @@ class createSection(View):
         try:
             if courseObj != None:
                 sections = Section.objects.filter(course_num=courseObj.course_num)
+
+            for course in self.course_list:
+                if course[1] == courseObj.__str__():
+                    for j in sections:
+                        if j.section_num == courseObj.section_num:
+                            return render(request, "create-section.html",
+                                      {"courses": self.course_list, "message": "Duplicate Course Number"})
         except AttributeError as z:
             return render(request, "create-section.html",
-                          {"courses": self.course_list, "message": "Validation Error"})
-
-        for course in self.course_list:
-            if course[1] == courseObj.__str__():
-                for j in sections:
-                    if j.section_num == courseObj.section_num:
-                        return render(request, "create-section.html",
-                                      {"courses": self.course_list, "message": "Duplicate Course Number"})
+                          {"courses": self.course_list, "message": "Duplicate Course Number"})
         print(section_num)
         print(section_num)
         new_section = Section(
@@ -231,7 +231,7 @@ class createSection(View):
             })
         except IntegrityError:
             return render(request, "create-section.html", {
-                "message": "Duplicate section number. Please use a unique number.",
+                "message": "Duplicate Course Number",
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })

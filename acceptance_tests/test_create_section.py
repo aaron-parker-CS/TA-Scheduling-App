@@ -32,7 +32,7 @@ class CreateSectionAcceptanceTest(TestCase):
         response = self.client.post(self.create_section_url, {
             'section_num': 800,
             'course_num': self.course.__str__(),
-            'section_type': "Dis",
+            'type': "Dis",
             'section_is_on_monday': True,
             'section_is_on_wednesday': True,
             "location": "EMS",
@@ -71,5 +71,30 @@ class CreateSectionAcceptanceTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Validation Error")
+
+    def test_duplicate_section_case(self):
+        self.client.post(self.create_section_url, {
+            'section': 402,
+            'course_num': self.course.__str__(),
+            'type': "Dis",
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+        })
+        response = self.client.post(self.create_section_url, {
+            'section': 402,
+            'course_num': self.course.__str__(),
+            'type': "Dis",
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Duplicate Course Number")
 
 
