@@ -1,25 +1,17 @@
 from django.test import TestCase, Client
-from TAScheduler.models import User, UserAssignment, Course, Section, Info
-from django.test import TestCase, Client
-from TAScheduler.models import User, Info
+from django.urls import reverse
+from TAScheduler.models import Course
 
-
-class CreateSectionTest(TestCase):
+class CreateSectionAcceptanceTest(TestCase):
     def setUp(self):
         self.client = Client()
-        # Creating a user with privileges to create courses
-        self.course = Course(course_num=101, semester='Fa', year=2023, credits=3,
-                             description='Test Course')
-        # Ensure the course object is saved
+        self.create_section_url = reverse("createSection-view")
+        self.course = Course(course_num=101, semester='Fa', year=2023, credits=3, description='Test Course')
         self.course.save()
-        self.assertTrue(Course.objects.filter(course_num=101).exists(), 'Course creation unsuccessful')
-
-        self.admin_user = User.objects.create_user('admin', 'admin@example.com', 'adminpassword')
-        self.client.login(username='admin', password='adminpassword')
 
     def test_successful_section_creation(self):
-        response = self.client.post("/createSection/", {
-            'section': 401,
+        response = self.client.post(self.create_section_url, {
+            'section_num': 399,
             'type': "discussion",
             'course_num': self.course.__str__(),
             'start_time': "00:00",
@@ -27,6 +19,57 @@ class CreateSectionTest(TestCase):
             'tuesday': True,
             'location': "EMS",
         })
-        print("Response content:", response.content.decode('utf-8'))
 
-        self.assertEqual(response.status_code, 200, "Wrong status code for successful section creation")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Section created successfully", response.content.decode('utf-8'))
+
+    def test_section_number_validation_low(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 100,
+            'course_num': self.course.__str__(),
+            'section_type': "Dis",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+        })
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertIn("Section number must be between 100 and 999", response.content.decode('utf-8'))
+
+    def test_section_number_validation_high(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 1000,
+            'course_num': self.course.__str__(),
+            'section_type': "lecture",
+            'section_is_on_monday': True,
+            'section_is_on_wednesday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+        })
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertIn("Section number must be between 100 and 999", response.content.decode('utf-8'))
+
+    def test_missing_required_fields_course_num(self):
+        response = self.client.post(self.create_section_url, {
+            'section_num': 402,
+            'section_type': "discussion",
+            'section_is_on_tuesday': True,
+            'section_is_on_thursday': True,
+            "location": "EMS",
+            "start_time": "11:11",
+            "end_time": "11:11",
+            # Missing'course_num''
+        })
+
+        self.assertNotEqual(response.status_code, 200)
+        self.assertIn("This field is required", response.content.decode('utf-8'))
+
+    # Repeat similar structure for other tests...
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()
