@@ -38,7 +38,8 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
         username = User.objects.get(username=request.user)
-        return render(request, "dashboard.html", {"user": username})
+        role = username.info.type
+        return render(request, "dashboard.html", {"user": username, "role": role})
 
 
 class CreateAccount(View):
