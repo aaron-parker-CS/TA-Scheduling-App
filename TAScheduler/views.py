@@ -37,7 +37,9 @@ class Dashboard(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        return render(request, "dashboard.html", {})
+        username = User.objects.get(username=request.user)
+        role = username.info.type
+        return render(request, "dashboard.html", {"user": username, "role": role})
 
 
 class CreateAccount(View):
@@ -79,11 +81,9 @@ class createCourse(View):
         semester = request.POST.get('semester')
         year = request.POST.get('year')
         description = request.POST.get('description')
-        credits = request.POST.get('credits')
 
         # TODO: Find a better fix. Keep in mind that these POST responses return empty strings if the textbox is
         #  empty, not None.
-        credits = 1 if credits == '' or credits is None else credits
 
         if Course.objects.filter(course_num=course_num, semester=semester, year=year).exists():
             return render(request, "createCourse.html", {
@@ -96,7 +96,6 @@ class createCourse(View):
             course_num=course_num,
             semester=semester,
             year=year,
-            credits=credits,
             description=description
         )
 
@@ -214,7 +213,6 @@ class createSection(View):
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })
-
 
         new_section = Section(
             course_num=courseObj,

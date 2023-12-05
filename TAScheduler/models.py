@@ -24,13 +24,10 @@ class Course(models.Model):
     course_num = models.IntegerField(validators=[MaxValueValidator(999), MinValueValidator(100)])
     semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES, default=SEMESTER_CHOICES[0])
     year = models.IntegerField(null=False, validators=[MaxValueValidator(9999), MinValueValidator(2000)])
-    credits = models.IntegerField(null=False, default=1)
     description = models.CharField(max_length=500, default="", null=False)
 
     def __str__(self):
         return str(self.course_num) + ': ' + str(self.semester) + str(self.year)
-
-
 
 
 class Section(models.Model):
