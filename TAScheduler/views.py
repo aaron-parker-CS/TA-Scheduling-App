@@ -231,18 +231,21 @@ class createSection(View):
         return render(request, "create-section.html", context)
 
     def post(self, request):
-
-        self.populate_course_list()
-
+        # function moved to new class
+        # replace with SectionClass.populate_course_list(self) ***make sure self.course_list exists
+        self.populate_course_list(self)
+        ###
         course_id = request.POST.get('course_num')
         courses = Course.objects.all()
 
+        #function moved to new class
+        #replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
         courseObj = None
         for i in courses:
             if str(i.__str__()) == course_id:
                 courseObj = i
                 break
-
+        ###
         section_type = request.POST.get('type')
         print(section_type)
         section_num = request.POST.get('section')
