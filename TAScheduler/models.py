@@ -67,7 +67,7 @@ class Info(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, null=False, default="N/A")
     address = models.CharField(max_length=20, null=False, default="N/A")
-    type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[2])
+    type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[0][0])
 
 
 class UserAssignment(models.Model):
