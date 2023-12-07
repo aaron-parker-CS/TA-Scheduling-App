@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
+from Classes.CreateAccountClass import CreateAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
@@ -120,22 +121,20 @@ class CreateAccount(View):
 
     def post(self, request):
         username = request.POST["username"]
-        password = request.POST["password"]
         email = request.POST['email']
-        if User.objects.filter(username=username).exists():
-            return render(request, 'create-account.html', {'message': 'User already exists',
-                                                           "types": Info.TYPE_CHOICES})
-        try:
-            new_user = User.objects.create_user(username, email, password)
-            new_user.save()
-        except ValueError:
-            return render(request, 'create-account.html', {'message': 'Enter required fields.',
-                                                           'types': Info.TYPE_CHOICES})
+        password = request.POST["password"]
         phone = request.POST['phone']
         address = request.POST['address']
         type_chosen = request.POST['type']
-        info = Info(user=new_user, phone=phone, address=address, type=type_chosen)
-        info.save()
+
+        try:
+            cac = CreateAccountClass()
+            cac.create_user(username, email, password, phone, address, type_chosen)
+
+        except ValueError as e:
+            return render(request, 'create-account.html', {'message': e,
+                                                           "types": Info.TYPE_CHOICES})
+
         return render(request, 'create-account.html', {'message': 'Creation successful',
                                                        "types": Info.TYPE_CHOICES})
 

@@ -21,6 +21,10 @@ class AccountCreationTest(TestCase):
             "type": "TA"
         })
         self.assertEqual(response.status_code, 200, msg="Failed to create a user account.")
+        self.assertEqual(response.context["message"], 'Creation successful',
+                         msg='Message should have been displayed saying, "Creation successful"')
+        self.assertNotEqual(None, User.objects.get(username='newuser'), msg="User account not successfully "
+                                                                            "created.")
 
     def test_duplicate_username(self):
         """
@@ -88,3 +92,23 @@ class AccountCreationTest(TestCase):
         })
         self.assertIn("Creation successful", response.content.decode(),
                       msg="Account should be created with a unique, non-empty username.")
+
+    def test_user_created_with_info(self):
+        response = self.client.post('/createAccount/', {"username": "test.account", "password": "test",
+                                                        'email': 'test', 'phone': 'test', 'address': 'test',
+                                                        'type': 'TA'})
+        new_id = User.objects.get(username='test.account')
+        self.assertNotEqual(None, Info.objects.get(user=new_id),
+                            msg="User was created without an info model assigned to it.")
+
+    def test_no_admin_redirect(self):
+        self.test_user = User(username="test", password="password", email='test.account@email.com')
+        self.user_info = Info(user=self.test_user)
+        self.test_user.info.type = self.test_user.info.TYPE_CHOICES[0]
+        self.client.login(username=self.test_user.username, password=self.test_user.password)
+        self.test_user.save()
+        self.user_info.save()
+
+        self.test_user.info.type = self.test_user.info.TYPE_CHOICES[2]
+        resp = self.client.get('/createAccount/')
+        self.assertEqual(resp.status_code, 403, msg="Forbidden message not given to non-admin user.")
