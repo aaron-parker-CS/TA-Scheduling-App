@@ -19,7 +19,7 @@ class DashboardClass():
 
             user_attr.append(assigned_sections)
             li.append(user_attr)
-            return li
+        return li
 
     def loadCourses(self, li):
         courses = Course.objects.all().order_by('year', 'course_num', 'semester')
