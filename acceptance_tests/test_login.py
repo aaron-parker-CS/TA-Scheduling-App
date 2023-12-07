@@ -58,3 +58,8 @@ class LoginAcceptanceTest(TestCase):
         self.assertIn("This field is required.", response.content.decode(),
                       msg="Validation error for empty fields should be displayed.")
 
+    def test_no_login(self):
+        # No login should redirect to the login screen
+        resp = self.client.get("/dashboard/")
+        self.assertRedirects(response=resp, expected_url='/', status_code=302,
+                             target_status_code=200, fetch_redirect_response=True)
