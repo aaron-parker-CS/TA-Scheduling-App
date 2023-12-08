@@ -21,7 +21,7 @@ class DashboardClass():
             assigned_sections = []
             sections = UserAssignment.objects.filter(user_id=user)
             for section in sections:
-                assigned_sections.append(section)
+                assigned_sections.append(section.__str__())
 
             user_attr.append(assigned_sections)
             li.append(user_attr)

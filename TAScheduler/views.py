@@ -108,7 +108,7 @@ class createCourse(View):
 
         # Creating a new course instance but not saving it yet
         new_course = Course(
-            course=course_num,
+            course_num=course_num,
             semester=semester,
             year=year,
             description=description
@@ -217,7 +217,7 @@ class createSection(View):
             })
 
         new_section = Section(
-            course_num=courseObj,
+            course=courseObj,
             section_num=section_num,
             section_type=section_type,
             section_is_on_friday=section_is_on_friday,

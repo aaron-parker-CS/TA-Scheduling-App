@@ -27,7 +27,7 @@ class Course(models.Model):
     description = models.CharField(max_length=500, default="", null=False)
 
     def __str__(self):
-        return str(self.course_num) + ': ' + str(self.semester) + str(self.year)
+        return str(self.semester) + str(self.year) + ': ' + str(self.course_num)
 
 
 class Section(models.Model):
@@ -50,6 +50,21 @@ class Section(models.Model):
     section_start_time = models.TimeField(null=False, default="00:00")
     section_end_time = models.TimeField(null=False, default="00:00")
     location = models.CharField(max_length=20, null=False)
+
+    def __str__(self):
+        dayStr = ''
+        if self.section_is_on_monday:
+            dayStr += 'M'
+        if self.section_is_on_tuesday:
+            dayStr += 'T'
+        if self.section_is_on_wednesday:
+            dayStr += 'W'
+        if self.section_is_on_thursday:
+            dayStr += 'U'
+        if self.section_is_on_friday:
+            dayStr += 'F'
+        return (self.course.__str__() + '-' + str(self.section_num) + ' ' + dayStr + ' ' +str(self.section_start_time) +
+                '-' + str(self.section_end_time))
 
 
 class Info(models.Model):
@@ -77,3 +92,9 @@ class UserAssignment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     section = models.ForeignKey(to=Section, on_delete=models.CASCADE)
+
+    def str_course(self):
+        return self.course.__str__()
+
+    def __str__(self):
+        return self.section.__str__()
