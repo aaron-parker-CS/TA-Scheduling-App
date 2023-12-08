@@ -42,10 +42,10 @@ class TestLogin(TestCase):
 
     def test_auth_type(self):
         result = self.login_validator.auth_type(self.test_user)
-        self.assertEqual('SU', result, msg='auth_type() fails to return correct user type')
+        self.assertEqual('Supervisor', result, msg='auth_type() fails to return correct user type')
 
     def test_auth_type_no_info(self):
         user2 = User.objects.create_user('test2', 'test2@example.com', 'This password is not great')
         user2.save()
         result = self.login_validator.auth_type(user2)
-        self.assertEqual('SU', result, msg='auth_type() fails to generate user info model when no info exists.')
+        self.assertEqual('Supervisor', result, msg='auth_type() fails to generate user info model when no info exists.')

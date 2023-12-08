@@ -22,7 +22,7 @@ class Course(models.Model):
     ]
 
     course_num = models.IntegerField(validators=[MaxValueValidator(999), MinValueValidator(100)])
-    semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES, default=SEMESTER_CHOICES[0])
+    semester = models.CharField(max_length=8, choices=SEMESTER_CHOICES, default=SEMESTER_CHOICES[0][0])
     year = models.IntegerField(null=False, validators=[MaxValueValidator(9999), MinValueValidator(2000)])
     description = models.CharField(max_length=500, default="", null=False)
 
@@ -33,14 +33,15 @@ class Course(models.Model):
 class Section(models.Model):
     # A course has 1-to-many sections
     SECTION_CHOICES = [
-        ("Lec", "LECTURE"),
-        ("Lab", "LAB"),
-        ("Dis", "DISCUSSION")
+        ('Lec', 'Lecture'),
+        ('Lab', 'Lab'),
+        ('Dis', 'Discussion')
     ]
-    course_num = models.ForeignKey('Course', on_delete=models.CASCADE)
+
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
     section_num = models.IntegerField(null=False, default=100,
                                       validators=[MaxValueValidator(999), MinValueValidator(100)])
-    section_type = models.CharField(max_length=3, choices=SECTION_CHOICES)
+    section_type = models.CharField(max_length=3, choices=SECTION_CHOICES, default=SECTION_CHOICES[0][0])
     section_is_on_monday = models.BooleanField(null=False, default=False)
     section_is_on_tuesday = models.BooleanField(null=False, default=False)
     section_is_on_wednesday = models.BooleanField(null=False, default=False)
@@ -60,18 +61,19 @@ class Info(models.Model):
         user_phone = user.Info.phone
     '''
     TYPE_CHOICES = [
-        ("SU", "Supervisor"),
-        ("IN", "Instructor"),
-        ("TA", "Teaching Assistant")
+        ('SU', 'Supervisor'),
+        ('TA', 'Teaching Assistant'),
+        ('IN', 'Instructor')
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, null=False, default="N/A")
-    address = models.CharField(max_length=20, null=False, default="N/A")
     type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[0][0])
+    skills = models.CharField(max_length=500, null=True, default='')
 
 
 class UserAssignment(models.Model):
     # M-N
     # A user may have many section assignments, a section may have more than one TA or lecturer assignment
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    section_num = models.ForeignKey(to=Section, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    section = models.ForeignKey(to=Section, on_delete=models.CASCADE)

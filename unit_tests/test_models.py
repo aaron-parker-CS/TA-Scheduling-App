@@ -15,10 +15,10 @@ class TestModels(TestCase):
         self.test_user = User(username="test", password="pass", email="test.user@email.com")
         self.test_course = Course(course_num=351, semester="Fa", year=2023,
                                   description="Data Structures and Algorithms")
-        self.test_section = Section(course_num=self.test_course, section_num=401, section_type="Lec",
+        self.test_section = Section(course=self.test_course, section_num=401, section_type="Lec",
                                     section_is_on_monday=True, section_is_on_wednesday=True, section_start_time="09:30",
                                     section_end_time="10:30", location="EMS180")
-        self.test_assignment = UserAssignment(user_id=self.test_user, section_num=self.test_section)
+        self.test_assignment = UserAssignment(user_id=self.test_user,course=self.test_course, section=self.test_section)
 
     def test_delete_user(self):
         User.objects.filter(id=self.test_user.id).delete()
@@ -26,7 +26,7 @@ class TestModels(TestCase):
                          msg="Test assignment fails to delete upon user deletion, no cascades")
 
     def test_delete_course(self):
-        Course.objects.filter(course_num=self.test_course.course_num).delete()
+        Course.objects.filter(id=self.test_course.id).delete()
         self.assertEqual(None, self.test_section.id,
                          "Section fails to cascade the delete upon course deletion.")
         self.assertEqual(None, self.test_assignment.id,

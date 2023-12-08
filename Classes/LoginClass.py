@@ -23,6 +23,11 @@ class LoginClass():
             new_info = Info.objects.create(user=user)
             new_info.save()
 
-        return user.info.type
+        role = None
+        for entry in Info.TYPE_CHOICES:
+            if user.info.type == entry[0]:
+                role = entry[1]
+
+        return role
 
 

@@ -52,7 +52,8 @@ class Dashboard(View):
         dashboard_loader.loadItems(Section, section_list)
 
         username = User.objects.get(username=request.user)
-        role = username.info.type
+        login_validator = LoginClass()
+        role = login_validator.auth_type(request.user)
 
         return render(request, "dashboard.html", {'username': username, 'role': role,
                                                   'users': user_list, 'courses': course_list, 'sections': section_list})
@@ -66,15 +67,15 @@ class CreateAccount(View):
 
     def post(self, request):
         username = request.POST["username"]
-        email = request.POST['email']
-        password = request.POST["password"]
+        password = request.POST['password']
+        fname = request.POST['first-name']
+        lname = request.POST['last-name']
         phone = request.POST['phone']
-        address = request.POST['address']
         type_chosen = request.POST['type']
 
         try:
             cac = CreateAccountClass()
-            cac.create_user(username, email, password, phone, address, type_chosen)
+            cac.create_user(username, password, fname, lname, phone, type_chosen)
 
         except ValueError as e:
             return render(request, 'create-account.html', {'message': e,
@@ -107,7 +108,7 @@ class createCourse(View):
 
         # Creating a new course instance but not saving it yet
         new_course = Course(
-            course_num=course_num,
+            course=course_num,
             semester=semester,
             year=year,
             description=description
@@ -206,22 +207,6 @@ class createSection(View):
         section_is_on_wednesday = False if section_is_on_wednesday is None else True
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
-        # new_section = None
-        # try:
-        #     if courseObj is not None:
-        #         sections = Section.objects.filter(course_num=courseObj)
-        #
-        #     for course in self.course_list:
-        #         if course[1] == courseObj.__str__():
-        #             for j in sections:
-        #                 if j.section_num == courseObj.section_num:
-        #                     print("Duplicate")
-        #                     return render(request, "create-section.html",
-        #                               {"courses": self.course_list, "message": "Duplicate Course Number"})
-        # except AttributeError as z:
-        #     print(z)
-        #     return render(request, "create-section.html",
-        #                   {"courses": self.course_list, "message": "Duplicate Course Number"})
 
         check = Section.objects.filter(course_num=courseObj, section_num=section_num)
         if check.exists():
@@ -248,11 +233,7 @@ class createSection(View):
             # Validate the section before saving
             new_section.full_clean()
             new_section.save()
-            return render(request, "create-section.html", {
-                "message": 'Creation successful',
-                "courses": self.course_list,
-                "types": Section.SECTION_CHOICES
-            })
+            return redirect('/dashboard/')
         except ValidationError as ve:
             # Handle validation errors
             print(f"Validation Error: {ve.message_dict}")
