@@ -1,10 +1,11 @@
 from TAScheduler.models import Course, Section, User, UserAssignment, Info
 
+
 class DashboardClass():
     def loadUsers(self, li):
         users = User.objects.all()
         header = ['Username', 'First Name', 'Last Name', 'User Type', 'Email', 'Phone Number', 'Skills',
-                  'Assigned Sections',]
+                  'Assigned Courses', 'Assigned Sections']
         li.append(header)
         for user in users:
             if not Info.objects.filter(user=user).exists():
@@ -16,13 +17,16 @@ class DashboardClass():
                 if user.info.type == entry[0]:
                     user_type = entry[1]
 
+            user_attr = [user.username, user.first_name, user.last_name, user_type, user.email, user.info.phone,
+                         user.info.skills]
+            assigned_courses = ''
+            assigned_sections = ''
+            courses = UserAssignment.objects.filter(user_id=user)
+            for course in courses:
+                assigned_courses += course.str_course() + ' '
+                assigned_sections += course.__str__() + ' '
 
-            user_attr = [user.username, user.first_name, user.last_name, user_type, user.email, user.info.phone, user.info.skills]
-            assigned_sections = []
-            sections = UserAssignment.objects.filter(user_id=user)
-            for section in sections:
-                assigned_sections.append(section.__str__())
-
+            user_attr.append(assigned_courses)
             user_attr.append(assigned_sections)
             li.append(user_attr)
         return li

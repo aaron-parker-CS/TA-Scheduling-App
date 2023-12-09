@@ -1,9 +1,8 @@
 from TAScheduler.models import Course, Section, User, UserAssignment, Info
 class SectionClass():
-    def populate_course_list(self):
-        course_list = []
+    def populate_course_list(self, course_list):
         courses = list(Course.objects.all())
-        if len(courses) > len(self.course_list):
+        if len(courses) > len(course_list):
             for course in courses:
                 course_list.append((course, course.__str__()))
             course_list.sort(key=str)

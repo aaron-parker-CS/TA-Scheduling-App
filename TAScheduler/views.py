@@ -6,6 +6,7 @@ from django.views import View
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
 from Classes.LoginClass import LoginClass
+from Classes.SectionClass import SectionClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
@@ -156,30 +157,22 @@ class DeleteAccount(View):
 
 
 class createSection(View):
-    course_list = []
-
-    def populate_course_list(self):
-        courses = list(Course.objects.all())
-        if len(courses) > len(self.course_list):
-            self.course_list = []
-            for course in courses:
-                self.course_list.append((course, course.__str__()))
-            self.course_list.sort(key=str)
 
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
+        course_list = []
+        course_tool = SectionClass()
+        course_list = course_tool.populate_course_list(course_list)
 
-        self.populate_course_list()
-
-        context = {"courses": self.course_list, "types": Section.SECTION_CHOICES}
+        context = {"courses": course_list, "types": Section.SECTION_CHOICES}
         return render(request, "create-section.html", context)
 
     def post(self, request):
-        # function moved to new class
-        # replace with SectionClass.populate_course_list(self) ***make sure self.course_list exists
-        self.populate_course_list(self)
-        ###
+        course_list = []
+        course_tool = SectionClass()
+        course_list = course_tool.populate_course_list(course_list)
+
         course_id = request.POST.get('course_num')
         courses = Course.objects.all()
 
@@ -208,11 +201,11 @@ class createSection(View):
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
 
-        check = Section.objects.filter(course_num=courseObj, section_num=section_num)
+        check = Section.objects.filter(course=courseObj, section_num=section_num)
         if check.exists():
             return render(request, "create-section.html", {
                 "message": "Duplicate Course Number",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
 
@@ -239,18 +232,18 @@ class createSection(View):
             print(f"Validation Error: {ve.message_dict}")
             return render(request, "create-section.html", {
                 "message": "Validation Error",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
         except IntegrityError:
             return render(request, "create-section.html", {
                 "message": "Duplicate Course Number",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
         except Exception as e:
             return render(request, "create-section.html", {
                 "message": str(e),
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
