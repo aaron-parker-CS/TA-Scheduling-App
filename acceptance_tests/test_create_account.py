@@ -14,10 +14,10 @@ class AccountCreationTest(TestCase):
         # Test creating an account with valid data.
         response = self.client.post('/createAccount/', {
             "username": "newuser",
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "newpassword",
-            "email": "newuser@example.com",
             "phone": "1234567890",
-            "address": "123 Test St",
             "type": "TA"
         })
         self.assertEqual(response.status_code, 200, msg="Failed to create a user account.")
@@ -33,10 +33,10 @@ class AccountCreationTest(TestCase):
         User.objects.create_user(username="existinguser", password="password123")
         response = self.client.post('/createAccount/', {
             "username": "existinguser",  # Duplicate username
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "newpassword",
-            "email": "newuser@example.com",
             "phone": "1234567890",
-            "address": "123 Test St",
             "type": "TA"
         })
         self.assertIn("User already exists", response.content.decode(),
@@ -48,10 +48,10 @@ class AccountCreationTest(TestCase):
         """
         response = self.client.post('/createAccount/', {
             "username": "",
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "",
-            "email": "",
             "phone": "",
-            "address": "",
             "type": ""
         })
         self.assertIn("Enter required fields.", response.content.decode(),
@@ -60,10 +60,10 @@ class AccountCreationTest(TestCase):
     def test_account_creation_with_non_duplicate_non_empty_email(self):
         response = self.client.post('/createAccount/', {
             "username": "newuser",
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "newpassword123",
-            "email": "invalidemailformat",
             "phone": "1234567890",
-            "address": "123 Test St",
             "type": "TA"
         })
         self.assertIn("Creation successful", response.content.decode(),
@@ -72,10 +72,10 @@ class AccountCreationTest(TestCase):
     def test_account_creation_non_empty_username(self):
         response = self.client.post('/createAccount/', {
             "username": "",
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "newpassword123",
-            "email": "newuser@example.com",
             "phone": "1234567890",
-            "address": "123 Test St",
             "type": "TA"
         })
         self.assertIn("Enter required fields.", response.content.decode(),
@@ -84,19 +84,23 @@ class AccountCreationTest(TestCase):
     def test_account_creation_valid_unique_username(self):
         response = self.client.post('/createAccount/', {
             "username": "uniqueuser",
+            "first-name": "sam",
+            "last-name": "gaudet",
             "password": "newpassword123",
-            "email": "uniqueuser@example.com",
             "phone": "1234567890",
-            "address": "123 Test St",
             "type": "TA"
         })
         self.assertIn("Creation successful", response.content.decode(),
                       msg="Account should be created with a unique, non-empty username.")
 
     def test_user_created_with_info(self):
-        response = self.client.post('/createAccount/', {"username": "test.account", "password": "test",
-                                                        'email': 'test', 'phone': 'test', 'address': 'test',
-                                                        'type': 'TA'})
+        response = self.client.post('/createAccount/', {
+            "username": "test.account",
+            "first-name": "sam",
+            "last-name": "gaudet",
+            "password": "test",
+            'phone': 'test',
+            'type': 'TA'})
         new_id = User.objects.get(username='test.account')
         self.assertNotEqual(None, Info.objects.get(user=new_id),
                             msg="User was created without an info model assigned to it.")

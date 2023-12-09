@@ -67,15 +67,15 @@ class CreateAccount(View):
 
     def post(self, request):
         username = request.POST["username"]
-        password = request.POST['password']
         fname = request.POST['first-name']
         lname = request.POST['last-name']
+        password = request.POST['password']
         phone = request.POST['phone']
         type_chosen = request.POST['type']
 
         try:
             cac = CreateAccountClass()
-            cac.create_user(username, password, fname, lname, phone, type_chosen)
+            cac.create_user(username, fname, lname, password, phone, type_chosen)
 
         except ValueError as e:
             return render(request, 'create-account.html', {'message': e,

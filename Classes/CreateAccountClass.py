@@ -3,7 +3,7 @@ from TAScheduler.models import Course, Section, User, UserAssignment, Info
 
 class CreateAccountClass:
 
-    def create_user(self, username, password, firstname, lastname, phone, type_chosen):
+    def create_user(self, username, firstname, lastname, password,  phone, type_chosen):
         if User.objects.filter(username=username).exists():
             raise ValueError("User already exists")
         if username == "":
