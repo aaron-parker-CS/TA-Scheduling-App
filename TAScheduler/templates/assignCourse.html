@@ -12,7 +12,7 @@
     </div>
 
     <div class="horizontal-center">
-        <form id="assign-user-form" action="{% url 'assign-user-view' %}" method="POST">
+        <form id="assign-course-form" action="{% url 'assign-course-view' %}" method="POST">
             {% csrf_token %}
             <table class="container">
                 <tr>
@@ -21,6 +21,16 @@
                         <select name="userId" id="accountDropdown">
                             {% for user in users %}
                                 <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="course">Select Course:</label></td>
+                    <td>
+                        <select name="courseId" id="courseDropdown">
+                            {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course }}</option>
                             {% endfor %}
                         </select>
                     </td>

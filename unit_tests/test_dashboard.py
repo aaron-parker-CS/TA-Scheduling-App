@@ -26,11 +26,10 @@ class TestLoadUsers(TestCase):
 
         self.assertEqual(len(li), 1)
         self.assertIn(['Username', 'First Name', 'Last Name', 'User Type', 'Email', 'Phone Number', 'Skills',
-                       'Assigned Sections',], li)
+                       'Assigned Courses', 'Assigned Sections'], li)
 
     def test_user_details(self):
         li = []
         self.dashboard.loadUsers(li)
         self.assertEqual(li[1],
-                         ['user1', 'John', 'Doe', 'Supervisor', 'john@example.com', 'N/A', '', []])
-
+                         ['user1', 'John', 'Doe', 'Supervisor', 'john@example.com', 'N/A', '', '', ''])

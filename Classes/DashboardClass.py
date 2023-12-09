@@ -1,21 +1,15 @@
+from Classes.AuthClass import auth_type
 from TAScheduler.models import Course, Section, User, UserAssignment, Info
 
 
 class DashboardClass():
     def loadUsers(self, li):
-        users = User.objects.all()
+        users = User.objects.all().order_by('info__type')
         header = ['Username', 'First Name', 'Last Name', 'User Type', 'Email', 'Phone Number', 'Skills',
                   'Assigned Courses', 'Assigned Sections']
         li.append(header)
         for user in users:
-            if not Info.objects.filter(user=user).exists():
-                user_info = Info.objects.create(user=user)
-                user_info.save()
-
-            user_type = None
-            for entry in Info.TYPE_CHOICES:
-                if user.info.type == entry[0]:
-                    user_type = entry[1]
+            user_type = auth_type(user)
 
             user_attr = [user.username, user.first_name, user.last_name, user_type, user.email, user.info.phone,
                          user.info.skills]
@@ -29,6 +23,11 @@ class DashboardClass():
             user_attr.append(assigned_courses)
             user_attr.append(assigned_sections)
             li.append(user_attr)
+        return li
+
+    def loadTAUsers(self, li):
+        li = self.loadUsers(li)
+        [user.pop(5) for user in li]
         return li
 
     def loadCourses(self, li):
