@@ -14,8 +14,6 @@ from django.contrib.auth import authenticate, login
 # Create your views here.
 class Home(View):
 
-
-
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('dashboard/')
@@ -98,9 +96,6 @@ class createCourse(View):
         year = request.POST.get('year')
         description = request.POST.get('description')
 
-        # TODO: Find a better fix. Keep in mind that these POST responses return empty strings if the textbox is
-        #  empty, not None.
-
         if Course.objects.filter(course_num=course_num, semester=semester, year=year).exists():
             return render(request, "createCourse.html", {
                 "message": "Duplicate course number. Please use a unique number.",
@@ -174,18 +169,9 @@ class createSection(View):
         course_list = course_tool.populate_course_list(course_list)
 
         course_id = request.POST.get('course_num')
-        courses = Course.objects.all()
+        courseObj = course_tool.find_course_obj(course_id)
 
-        #function moved to new class
-        #replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
-        courseObj = None
-        for i in courses:
-            if str(i.__str__()) == course_id:
-                courseObj = i
-                break
-        ###
         section_type = request.POST.get('type')
-        print(section_type)
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
