@@ -4,12 +4,17 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from Classes.CreateAccountClass import CreateAccountClass
+from Classes.DashboardClass import DashboardClass
+from Classes.LoginClass import LoginClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
 class Home(View):
+
+
+
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('dashboard/')
@@ -17,97 +22,38 @@ class Home(View):
 
     def post(self, request):
         username = request.POST["username"]
-        if username is None or username == '':
-            return render(request, 'login.html', {'message': 'This field is required.'})
-        if not User.objects.filter(username=username).exists():
-            return render(request, "login.html", {"message": "Incorrect username"})
         password = request.POST["password"]
-        if password is None or password == '':
-            return render(request, 'login.html', {'message': 'This field is required.'})
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        login_validator = LoginClass()
+
+        validation = login_validator.validate_login_fields(request, username, password)
+        if validation == 'Success':
+            user = authenticate(request, username=username, password=password)
             login(request, user)
-            print("Logging in " + username)
-            return redirect("dashboard/", {"user": user})
+            return redirect("dashboard/", {})
         else:
-            return render(request, "login.html", {"message": "Incorrect password"})
+            return render(request, 'login.html', {'message': validation})
 
 
 class Dashboard(View):
-
-    def loadUsers(self, li):
-        users = User.objects.all()
-        header = ['Username', 'First Name', 'Last Name', 'User Type', 'Email', 'Phone Number', 'Assigned Sections',
-                  'Skills']
-        li.append(header)
-        for user in users:
-            user_attr = [user.username, user.first_name, user.last_name, user.info.type, user.email, user.info.phone]
-            assigned_sections = []
-            sections = UserAssignment.objects.filter(user_id=user)
-            for section in sections:
-                assigned_sections.append(section)
-
-            user_attr.append(assigned_sections)
-            li.append(user_attr)
-
-    def loadCourses(self, li):
-        courses = Course.objects.all().order_by('year', 'course_num', 'semester')
-        header = ['Course Name', 'Course Number', 'Semester', 'Year']
-        li.append(header)
-        for course in courses:
-            course_attr = [course.description, course.course_num, course.semester, course.year]
-            li.append(course_attr)
-
-    def loadSections(self, li):
-        sections = Section.objects.all().order_by('course_num__year', 'course_num__course_num', 'course_num__semester')
-        header = ['Course', 'Section Number', 'Section Type', 'Days', 'Start Time', 'End Time']
-        li.append(header)
-        for section in sections:
-            dayStr = ''
-            if section.section_is_on_monday:
-                dayStr += 'M'
-            if section.section_is_on_tuesday:
-                dayStr += 'T'
-            if section.section_is_on_wednesday:
-                dayStr += 'W'
-            if section.section_is_on_thursday:
-                dayStr += 'U'
-            if section.section_is_on_friday:
-                dayStr += 'F'
-            section_attr = [section.course_num, section.section_num, section.section_type, dayStr,
-                            section.section_start_time, section.section_end_time]
-            li.append(section_attr)
-
-    def loadItems(self, model, li):
-        if model == User:
-            self.loadUsers(li)
-            return
-        if model == Course:
-            self.loadCourses(li)
-            return
-        if model == Section:
-            self.loadSections(li)
-            return
-
-        objects = model.objects.all()
-        for item in objects:
-            li.append(item)
 
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
 
+        dashboard_loader = DashboardClass()
+
         user_list = []
-        self.loadItems(User, user_list)
+        dashboard_loader.loadItems(User, user_list)
 
         course_list = []
-        self.loadItems(Course, course_list)
+        dashboard_loader.loadItems(Course, course_list)
 
         section_list = []
-        self.loadItems(Section, section_list)
+        dashboard_loader.loadItems(Section, section_list)
 
         username = User.objects.get(username=request.user)
-        role = username.info.type
+        login_validator = LoginClass()
+        role = login_validator.auth_type(request.user)
 
         return render(request, "dashboard.html", {'username': username, 'role': role,
                                                   'users': user_list, 'courses': course_list, 'sections': section_list})
@@ -121,15 +67,15 @@ class CreateAccount(View):
 
     def post(self, request):
         username = request.POST["username"]
-        email = request.POST['email']
-        password = request.POST["password"]
+        password = request.POST['password']
+        fname = request.POST['first-name']
+        lname = request.POST['last-name']
         phone = request.POST['phone']
-        address = request.POST['address']
         type_chosen = request.POST['type']
 
         try:
             cac = CreateAccountClass()
-            cac.create_user(username, email, password, phone, address, type_chosen)
+            cac.create_user(username, password, fname, lname, phone, type_chosen)
 
         except ValueError as e:
             return render(request, 'create-account.html', {'message': e,
@@ -261,22 +207,6 @@ class createSection(View):
         section_is_on_wednesday = False if section_is_on_wednesday is None else True
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
-        # new_section = None
-        # try:
-        #     if courseObj is not None:
-        #         sections = Section.objects.filter(course_num=courseObj)
-        #
-        #     for course in self.course_list:
-        #         if course[1] == courseObj.__str__():
-        #             for j in sections:
-        #                 if j.section_num == courseObj.section_num:
-        #                     print("Duplicate")
-        #                     return render(request, "create-section.html",
-        #                               {"courses": self.course_list, "message": "Duplicate Course Number"})
-        # except AttributeError as z:
-        #     print(z)
-        #     return render(request, "create-section.html",
-        #                   {"courses": self.course_list, "message": "Duplicate Course Number"})
 
         check = Section.objects.filter(course_num=courseObj, section_num=section_num)
         if check.exists():
@@ -287,7 +217,7 @@ class createSection(View):
             })
 
         new_section = Section(
-            course_num=courseObj,
+            course=courseObj,
             section_num=section_num,
             section_type=section_type,
             section_is_on_friday=section_is_on_friday,
@@ -303,11 +233,7 @@ class createSection(View):
             # Validate the section before saving
             new_section.full_clean()
             new_section.save()
-            return render(request, "create-section.html", {
-                "message": 'Creation successful',
-                "courses": self.course_list,
-                "types": Section.SECTION_CHOICES
-            })
+            return redirect('/dashboard/')
         except ValidationError as ve:
             # Handle validation errors
             print(f"Validation Error: {ve.message_dict}")
