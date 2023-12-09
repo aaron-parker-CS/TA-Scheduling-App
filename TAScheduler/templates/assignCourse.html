@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign User</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
+</head>
+<body>
+    <div class="horizontal-center">
+        <h3 class="form-title">Assign User</h3>
+    </div>
+
+    <div class="horizontal-center">
+        <form id="assign-course-form" action="{% url 'assign-course-view' %}" method="POST">
+            {% csrf_token %}
+            <table class="container">
+                <tr>
+                    <td><label for="accountDropdown">Select User:</label></td>
+                    <td>
+                        <select name="userId" id="accountDropdown">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="course">Select Course:</label></td>
+                    <td>
+                        <select name="courseId" id="courseDropdown">
+                            {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><button class="back" type="button" onclick="location.href='/dashboard/'">Back</button></td>
+                    <td><button type="submit">Assign User</button></td>
+                </tr>
+            </table>
+
+
+
+        </form>
+    </div>
+    <div class="container">
+        <p class="alert">{{ message }}</p>
+    </div>
+
+</body>
+
+</html>

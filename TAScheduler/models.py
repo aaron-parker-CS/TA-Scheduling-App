@@ -91,7 +91,7 @@ class UserAssignment(models.Model):
     # A user may have many section assignments, a section may have more than one TA or lecturer assignment
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    section = models.ForeignKey(to=Section, on_delete=models.CASCADE)
+    section = models.ForeignKey(to=Section, on_delete=models.CASCADE, null=True)
 
     def str_course(self):
         return self.course.__str__()

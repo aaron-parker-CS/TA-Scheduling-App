@@ -1,19 +1,20 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
+from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
 from Classes.LoginClass import LoginClass
+from Classes.SectionClass import SectionClass
+from Classes.UpdateInfo import updateInfo
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
 class Home(View):
-
-
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -40,10 +41,14 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
 
+        role = auth_type(request.user)
         dashboard_loader = DashboardClass()
 
         user_list = []
-        dashboard_loader.loadItems(User, user_list)
+        if role == 'Teaching Assistant':
+            dashboard_loader.loadTAUsers(user_list)
+        else:
+            dashboard_loader.loadItems(User, user_list)
 
         course_list = []
         dashboard_loader.loadItems(Course, course_list)
@@ -52,8 +57,6 @@ class Dashboard(View):
         dashboard_loader.loadItems(Section, section_list)
 
         username = User.objects.get(username=request.user)
-        login_validator = LoginClass()
-        role = login_validator.auth_type(request.user)
 
         return render(request, "dashboard.html", {'username': username, 'role': role,
                                                   'users': user_list, 'courses': course_list, 'sections': section_list})
@@ -61,11 +64,16 @@ class Dashboard(View):
 
 class CreateAccount(View):
     def get(self, request):
-        if not request.user.is_authenticated or not request.user.info.type == 'SU':
-            return render(request, 'dashboard.html', status=403)
+        if not request.user.is_authenticated:
+            return redirect('/')
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
         return render(request, 'create-account.html', {"types": Info.TYPE_CHOICES})
 
     def post(self, request):
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
+
         username = request.POST["username"]
         password = request.POST['password']
         fname = request.POST['first-name']
@@ -89,16 +97,18 @@ class createCourse(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
         return render(request, "createCourse.html", {"SEMESTER_CHOICES": SEMESTER_CHOICES.choices})
 
     def post(self, request):
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
+
         course_num = request.POST.get('course_num')
         semester = request.POST.get('semester')
         year = request.POST.get('year')
         description = request.POST.get('description')
-
-        # TODO: Find a better fix. Keep in mind that these POST responses return empty strings if the textbox is
-        #  empty, not None.
 
         if Course.objects.filter(course_num=course_num, semester=semester, year=year).exists():
             return render(request, "createCourse.html", {
@@ -137,11 +147,17 @@ class DeleteAccount(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
+
         users = User.objects.all()
         context = {"users": users}
         return render(request, "DeleteAccount.html", context)
 
     def post(self, request):
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
+
         selected_user_id = request.POST.get('userId')
         # delete user
         try:
@@ -156,43 +172,32 @@ class DeleteAccount(View):
 
 
 class createSection(View):
-    course_list = []
-
-    def populate_course_list(self):
-        courses = list(Course.objects.all())
-        if len(courses) > len(self.course_list):
-            self.course_list = []
-            for course in courses:
-                self.course_list.append((course, course.__str__()))
-            self.course_list.sort(key=str)
 
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
 
-        self.populate_course_list()
+        course_list = []
+        course_tool = SectionClass()
+        course_list = course_tool.populate_course_list(course_list)
 
-        context = {"courses": self.course_list, "types": Section.SECTION_CHOICES}
+        context = {"courses": course_list, "types": Section.SECTION_CHOICES}
         return render(request, "create-section.html", context)
 
     def post(self, request):
-        # function moved to new class
-        # replace with SectionClass.populate_course_list(self) ***make sure self.course_list exists
-        self.populate_course_list(self)
-        ###
-        course_id = request.POST.get('course_num')
-        courses = Course.objects.all()
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
 
-        #function moved to new class
-        #replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
-        courseObj = None
-        for i in courses:
-            if str(i.__str__()) == course_id:
-                courseObj = i
-                break
-        ###
+        course_list = []
+        course_tool = SectionClass()
+        course_list = course_tool.populate_course_list(course_list)
+
+        course_id = request.POST.get('course_num')
+        courseObj = course_tool.find_course_obj(course_id)
+
         section_type = request.POST.get('type')
-        print(section_type)
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
         section_is_on_thursday = request.POST.get('thursday')
@@ -208,11 +213,11 @@ class createSection(View):
         section_is_on_tuesday = False if section_is_on_tuesday is None else True
         section_is_on_monday = False if section_is_on_monday is None else True
 
-        check = Section.objects.filter(course_num=courseObj, section_num=section_num)
+        check = Section.objects.filter(course=courseObj, section_num=section_num)
         if check.exists():
             return render(request, "create-section.html", {
                 "message": "Duplicate Course Number",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
 
@@ -239,18 +244,61 @@ class createSection(View):
             print(f"Validation Error: {ve.message_dict}")
             return render(request, "create-section.html", {
                 "message": "Validation Error",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
         except IntegrityError:
             return render(request, "create-section.html", {
                 "message": "Duplicate Course Number",
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
         except Exception as e:
             return render(request, "create-section.html", {
                 "message": str(e),
-                "courses": self.course_list,
+                "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
+
+
+class assignCourse(View):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        if not auth_type(request.user) == 'Supervisor':
+            raise PermissionDenied()
+        users = User.objects.all()
+        courses = Course.objects.all()
+        context = {"users": users, "courses": courses}
+        return render(request, "assignCourse.html", context)
+
+    def post(self, request):
+        pass
+
+
+class editInfo(View):
+
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        phone = request.user.info.phone
+        skills = request.user.info.skills
+        return render(request, 'edit-info.html', {"first": first_name, "last": last_name,
+                                                  "phone": phone, "skills": skills})
+
+    def post(self, request):
+        first = request.POST.get('first-name')
+        last = request.POST.get('last-name')
+        phone = request.POST.get('phone')
+        skills = request.POST.get('skills')
+        message = ''
+
+        result = updateInfo(request.user, first, last, phone, skills, message)
+        if result:
+            return redirect('/')
+        else:
+            return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
+                                                      "phone": request.user.info.phone,
+                                                      "skills": request.user.infoskills, 'message': message})

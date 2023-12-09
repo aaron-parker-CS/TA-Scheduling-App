@@ -10,10 +10,17 @@
 
 <ul>
     <li><a>Logged in as {{ username }} - {{ role }}</a></li>
+    {% if role == "Supervisor" %}
     <li><a href="/createAccount/">Create Account</a></li>
     <li><a href="/deleteAccount/">Delete Account</a></li>
     <li><a href="/createCourse/">Create Course</a></li>
     <li><a href="/createSection/">Create Section</a></li>
+    <li><a href="/assignCourse/">Assign User To Course</a></li>
+    {% endif %}
+    {% if role == "Supervisor" or role == "Instructor" %}
+    <li><a href="/assignSection/">Assign User to Section</a></li>
+    {% endif %}
+    <li><a href="/editInfo/">Edit Personal Information</a></li>
     <li><a href="/logout/">Logout</a></li>
 </ul>
 
