@@ -1,3 +1,4 @@
+import string
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
@@ -6,6 +7,7 @@ from django.views import View
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
+from Classes.EnterSkillClass import EnterSkillClass
 from Classes.LoginClass import LoginClass
 from Classes.SectionClass import SectionClass
 from Classes.UpdateInfo import updateInfo
@@ -75,15 +77,15 @@ class CreateAccount(View):
             raise PermissionDenied()
 
         username = request.POST["username"]
-        password = request.POST['password']
         fname = request.POST['first-name']
         lname = request.POST['last-name']
+        password = request.POST['password']
         phone = request.POST['phone']
         type_chosen = request.POST['type']
 
         try:
             cac = CreateAccountClass()
-            cac.create_user(username, password, fname, lname, phone, type_chosen)
+            cac.create_user(username, fname, lname, password, phone, type_chosen)
 
         except ValueError as e:
             return render(request, 'create-account.html', {'message': e,
@@ -197,6 +199,14 @@ class createSection(View):
         course_id = request.POST.get('course_num')
         courseObj = course_tool.find_course_obj(course_id)
 
+        # function moved to new class
+        # replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
+        courseObj = None
+        for i in courses:
+            if str(i.__str__()) == course_id:
+                courseObj = i
+                break
+        ###
         section_type = request.POST.get('type')
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
@@ -261,6 +271,22 @@ class createSection(View):
             })
 
 
+class EnterSkill(View):
+    def get(self, request):
+        skills = User.Info.skills
+        esc = EnterSkillClass()
+        skill_list = esc.create_skill_list(skills)
+
+        return render(request, "skills.html", {"skill_list": skill_list})
+
+    def post(self, request):
+        skill_to_add = request.POST["skills"]
+        if User.Info.skills is None:
+            User.Info.skills + skill_to_add
+        else:
+            User.Info.skills + "," + skill_to_add
+        return render(request, "skills.html", {})
+
 class assignCourse(View):
     def get(self, request):
         if not request.user.is_authenticated:
@@ -302,3 +328,4 @@ class editInfo(View):
             return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
                                                       "phone": request.user.info.phone,
                                                       "skills": request.user.infoskills, 'message': message})
+

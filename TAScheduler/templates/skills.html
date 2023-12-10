@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter Skills</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+            <table>
+                <tr>
+                    <td><label for="skills">Enter Skill (ex: Python):</label></td>
+                    <td><input type="text" name="skill"></td>
+                </tr>
+            </table>
+    </form>
+
+<ul>
+    <p>Current Skills:</p>
+    {% for i in skill_list %}
+        <li>i</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
