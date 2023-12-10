@@ -11,20 +11,17 @@ class CreateSectionTest(TestCase):
         # create course
         self.course = Course(course_num=101, semester='Fa', year=2023,
                              description='Test Course')
+        self.sectionHelper = SectionClass()
         self.course.save()
-        print(Course.objects.all())
-        print(self.course.id)
 
     def test_populate_course_list(self):
         self.course_list = []
-        self.course_list = SectionClass.populate_course_list(self)
-        print("ABOVE")
-        print(len(self.course_list))
+        self.course_list = self.sectionHelper.populate_course_list(self.course_list)
         self.assertTrue(len(self.course_list) > 0)
 
     def test_find_course_obj(self):
-        course_id = "101: Fa2023"
-        courseObj = SectionClass.find_course_obj(self, course_id)
+        course_id = "Fa2023: 101"
+        courseObj = self.sectionHelper.find_course_obj(course_id)
         self.assertEqual(courseObj, self.course)
 
     # def test_create_section_success(self):

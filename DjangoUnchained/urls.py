@@ -19,7 +19,8 @@ from django.urls import path
 
 
 from DjangoUnchained import settings
-from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection, EnterSkill
+from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection, assignCourse,
+    editInfo, EnterSkill
 from django.contrib.auth.views import LogoutView
 
 
@@ -33,4 +34,6 @@ urlpatterns = [
     path('deleteAccount/', DeleteAccount.as_view(), name="DeleteAccount-view"),
     path('createSection/', createSection.as_view(), name="createSection-view"),
     path('enterSkill/', EnterSkill.as_view(), name="EnterSkill-view")
+    path('assignCourse/', assignCourse.as_view(), name="assign-course-view"),
+    path('editInfo/', editInfo.as_view(), name="edit-personal-info"),
 ]

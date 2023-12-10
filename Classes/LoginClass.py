@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 
 from TAScheduler.models import Course, Section, User, UserAssignment, Info
 
+
 class LoginClass():
 
     def validate_login_fields(self, request, username, password):
@@ -16,18 +17,3 @@ class LoginClass():
             return 'Success'
         else:
             return 'Incorrect password'
-
-    def auth_type(self, user):
-
-        if not Info.objects.filter(user=user).exists():
-            new_info = Info.objects.create(user=user)
-            new_info.save()
-
-        role = None
-        for entry in Info.TYPE_CHOICES:
-            if user.info.type == entry[0]:
-                role = entry[1]
-
-        return role
-
-
