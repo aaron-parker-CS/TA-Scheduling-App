@@ -1,3 +1,5 @@
+import string
+
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
@@ -5,6 +7,7 @@ from django.views import View
 
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
+from Classes.EnterSkillClass import EnterSkillClass
 from Classes.LoginClass import LoginClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
@@ -12,8 +15,6 @@ from django.contrib.auth import authenticate, login
 
 # Create your views here.
 class Home(View):
-
-
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -183,8 +184,8 @@ class createSection(View):
         course_id = request.POST.get('course_num')
         courses = Course.objects.all()
 
-        #function moved to new class
-        #replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
+        # function moved to new class
+        # replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
         courseObj = None
         for i in courses:
             if str(i.__str__()) == course_id:
@@ -254,3 +255,20 @@ class createSection(View):
                 "courses": self.course_list,
                 "types": Section.SECTION_CHOICES
             })
+
+
+class EnterSkill(View):
+    def get(self, request):
+        skills = User.Info.skills
+        esc = EnterSkillClass()
+        skill_list = esc.create_skill_list(skills)
+
+        return render(request, "skills.html", {"skill_list": skill_list})
+
+    def post(self, request):
+        skill_to_add = request.POST["skills"]
+        if User.Info.skills is None:
+            User.Info.skills + skill_to_add
+        else:
+            User.Info.skills + "," + skill_to_add
+        return render(request, "skills.html", {})
