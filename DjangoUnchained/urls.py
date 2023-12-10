@@ -33,7 +33,7 @@ urlpatterns = [
     path('createCourse/', createCourse.as_view(), name="createCourse-view"),
     path('deleteAccount/', DeleteAccount.as_view(), name="DeleteAccount-view"),
     path('createSection/', createSection.as_view(), name="createSection-view"),
-    path('enterSkill/', EnterSkill.as_view(), name="EnterSkill-view")
+    path('enterSkill/', EnterSkill.as_view(), name="EnterSkill-view"),
     path('assignCourse/', assignCourse.as_view(), name="assign-course-view"),
     path('editInfo/', editInfo.as_view(), name="edit-personal-info"),
 ]
