@@ -21,7 +21,11 @@
     <li><a href="/assignSection/">Assign User to Section</a></li>
     {% endif %}
     <li><a href="/editInfo/">Edit Personal Information</a></li>
-    <li><a href="/logout/">Logout</a></li>
+    <form method="post" action="/logout/">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
 </ul>
 
 <h3 class="form-title">Users</h3>
