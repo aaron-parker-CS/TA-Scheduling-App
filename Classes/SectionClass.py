@@ -1,4 +1,7 @@
+from datetime import datetime
 from TAScheduler.models import Course, Section, User, UserAssignment, Info
+
+
 class SectionClass():
     def populate_course_list(self, course_list):
         courses = list(Course.objects.all())
@@ -16,3 +19,10 @@ class SectionClass():
                 courseObj = i
                 break
         return courseObj
+
+    def validate_time(self, start: datetime, end: datetime) -> bool:
+        '''Returns true if start is before end, false otherwise. both arguments are of type datetime'''
+        if type(start) is not datetime or type(end) is not datetime:
+            raise ValueError
+
+        return start < end

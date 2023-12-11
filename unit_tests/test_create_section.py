@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -13,6 +15,8 @@ class CreateSectionTest(TestCase):
                              description='Test Course')
         self.sectionHelper = SectionClass()
         self.course.save()
+        self.now = datetime.datetime.now()
+        self.later = self.now + datetime.timedelta(minutes=10)
 
     def test_populate_course_list(self):
         self.course_list = []
@@ -23,6 +27,19 @@ class CreateSectionTest(TestCase):
         course_id = "Fa2023: 101"
         courseObj = self.sectionHelper.find_course_obj(course_id)
         self.assertEqual(courseObj, self.course)
+
+    def test_validate_time_success(self):
+        result = self.sectionHelper.validate_time(self.now, self.later)
+        self.assertTrue(result, msg='Validate time fails to return true for valid time comparison')
+
+    def test_validate_time_fail(self):
+        result = self.sectionHelper.validate_time(self.later, self.now)
+        self.assertFalse(result, msg='Validate time fails to return false for first argument being chronologically '
+                                     'after the second.')
+
+    def test_validate_time_invalid_arg(self):
+        with self.assertRaises(ValueError, msg='validate_time() fails to raise ValueError for invalid arguments.'):
+            self.sectionHelper.validate_time([], 'string')
 
     # def test_create_section_success(self):
     #     # check for successful redirect with good form request.
