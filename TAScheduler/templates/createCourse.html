@@ -16,7 +16,7 @@
             <table class="container">
                 <tr>
                     <td><label for="course_num">Course Number:</label></td>
-                    <td><input type="number" name="course_num" placeholder="361"></td>
+                    <td><input type="number" name="course_num" maxlength="3" placeholder="361"></td>
                 </tr>
                 <tr>
                     <td><label for="semester">Semester:</label></td>
@@ -30,11 +30,11 @@
                 </tr>
                 <tr>
                     <td><label for="year">Year:</label></td>
-                    <td><input type="number" name="year" placeholder="E.g. 2023"></td>
+                    <td><input type="number" maxlength="4" name="year" placeholder="E.g. 2023"></td>
                 </tr>
                 <tr>
                     <td><label for="description">Description:</label></td>
-                    <td><input type="text" name="description" placeholder="Type description here"></td>
+                    <td><input type="text" maxlength="50" name="description" placeholder="Type description here"></td>
                 </tr>
                 <tr>
                     <td><button class="back" type="button" onclick="location.href='/dashboard/'">
