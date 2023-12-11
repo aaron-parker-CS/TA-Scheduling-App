@@ -9,6 +9,7 @@ from Classes.DashboardClass import DashboardClass
 from Classes.LoginClass import LoginClass
 from Classes.SectionClass import SectionClass
 from Classes.UpdateInfo import updateInfo
+from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
 
@@ -159,15 +160,10 @@ class DeleteAccount(View):
             raise PermissionDenied()
 
         selected_user_id = request.POST.get('userId')
-        # delete user
-        try:
-            user_to_delete = User.objects.get(id=selected_user_id)
-            user_to_delete.delete()
-            message = f"Account '{user_to_delete.username}' deleted successfully."
-        except User.DoesNotExist:
-            message = "User not found."
-        # Render the template with the appropriate context
-        context = {'message': message, 'users': User.objects.all()}
+        account_manager = DeleteAccountClass()
+        success_message, error_message = account_manager.delete_user(selected_user_id)
+
+        context = {'message': success_message or error_message, 'users': User.objects.all()}
         return render(request, "DeleteAccount.html", context)
 
 
