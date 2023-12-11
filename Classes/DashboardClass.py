@@ -15,10 +15,12 @@ class DashboardClass():
                          user.info.skills]
             assigned_courses = ''
             assigned_sections = ''
-            courses = UserAssignment.objects.filter(user_id=user)
-            for course in courses:
+            assigned_course_objects = UserAssignment.objects.filter(user_id=user)
+            for course in assigned_course_objects:
                 assigned_courses += course.str_course() + ' '
-                assigned_sections += course.__str__() + ' '
+                section_str = course.str_section()
+                if section_str is not None:
+                    assigned_sections += section_str + ' '
 
             user_attr.append(assigned_courses)
             user_attr.append(assigned_sections)

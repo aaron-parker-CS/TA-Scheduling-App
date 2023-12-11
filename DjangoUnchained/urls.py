@@ -19,8 +19,7 @@ from django.urls import path
 
 
 from DjangoUnchained import settings
-from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection, assignCourse, \
-    editInfo, EnterSkill
+from TAScheduler.views import Home, Dashboard, CreateAccount, createCourse, DeleteAccount, createSection, assignCourse, editInfo, EnterSkill
 from django.contrib.auth.views import LogoutView
 
 

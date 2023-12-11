@@ -1,9 +1,11 @@
 import string
+from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
+from Classes.AssignUserClass import assign_user_to_course
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -199,14 +201,19 @@ class createSection(View):
         course_id = request.POST.get('course_num')
         courseObj = course_tool.find_course_obj(course_id)
 
-        # function moved to new class
-        # replace w/ courseObj = SectionClass.find_course_obj(self,course_id)
-        courseObj = None
-        for i in courses:
-            if str(i.__str__()) == course_id:
-                courseObj = i
-                break
-        ###
+        section_start_time = request.POST.get('start_time')
+        section_end_time = request.POST.get('end_time')
+        start_time = datetime.strptime(section_start_time, '%H:%M')
+        end_time = datetime.strptime(section_end_time, '%H:%M')
+        is_valid_time = course_tool.validate_time(start_time, end_time)
+
+        if not is_valid_time:
+            return render(request, "create-section.html", {
+                "message": "Section end time is before section begin time",
+                "courses": course_list,
+                "types": Section.SECTION_CHOICES
+            })
+
         section_type = request.POST.get('type')
         section_num = request.POST.get('section')
         section_is_on_friday = request.POST.get('friday')
@@ -214,8 +221,7 @@ class createSection(View):
         section_is_on_wednesday = request.POST.get('wednesday')
         section_is_on_tuesday = request.POST.get('tuesday')
         section_is_on_monday = request.POST.get('monday')
-        section_start_time = request.POST.get('start_time')
-        section_end_time = request.POST.get('end_time')
+
         location = request.POST.get('location')
         section_is_on_friday = False if section_is_on_friday is None else True
         section_is_on_thursday = False if section_is_on_thursday is None else True
@@ -226,7 +232,7 @@ class createSection(View):
         check = Section.objects.filter(course=courseObj, section_num=section_num)
         if check.exists():
             return render(request, "create-section.html", {
-                "message": "Duplicate Course Number",
+                "message": "Duplicate Section Number",
                 "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
@@ -259,7 +265,7 @@ class createSection(View):
             })
         except IntegrityError:
             return render(request, "create-section.html", {
-                "message": "Duplicate Course Number",
+                "message": "Duplicate Section Number",
                 "courses": course_list,
                 "types": Section.SECTION_CHOICES
             })
@@ -299,7 +305,14 @@ class assignCourse(View):
         return render(request, "assignCourse.html", context)
 
     def post(self, request):
-        pass
+        user = User.objects.get(id=request.POST.get('userId'))
+        course = Course.objects.get(id=request.POST.get('courseId'))
+
+        if assign_user_to_course(user, course):
+            return redirect('/')
+        else:
+            return render(request, 'assignCourse.html', {'users': User.objects.all(),'courses': Course.objects.all(), 'message': 'Unable to assign user'})
+
 
 
 class editInfo(View):

@@ -96,5 +96,11 @@ class UserAssignment(models.Model):
     def str_course(self):
         return self.course.__str__()
 
+    def str_section(self):
+        if self.section is not None:
+            return self.section.__str__()
+        else:
+            return None
+
     def __str__(self):
-        return self.section.__str__()
+        return str(self.user_id) + ' is asssigned to ' + str(self.course) + ' section ' + str(self.section)
