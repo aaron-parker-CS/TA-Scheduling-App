@@ -11,3 +11,4 @@ def assign_user_to_course(user, course):
     except Exception as e:
         print(e)
         return False
+

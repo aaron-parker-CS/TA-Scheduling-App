@@ -15,8 +15,6 @@ class CreateSectionTest(TestCase):
                              description='Test Course')
         self.sectionHelper = SectionClass()
         self.course.save()
-        self.now = datetime.datetime.now()
-        self.later = self.now + datetime.timedelta(minutes=10)
 
     def test_populate_course_list(self):
         self.course_list = []

@@ -16,6 +16,7 @@ class DashboardClass():
             assigned_courses = ''
             assigned_sections = ''
             assigned_course_objects = UserAssignment.objects.filter(user_id=user)
+            print(assigned_course_objects)
             for course in assigned_course_objects:
                 assigned_courses += course.str_course() + ' '
                 section_str = course.str_section()

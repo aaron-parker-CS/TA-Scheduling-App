@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Section</title>
+    <!-- Add your CSS styles here -->
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+
+    <h1>Assign Section</h1>
+
+    <form action="/assignSection/" method="post">
+    {% csrf_token %}
+        <section>
+            <select name="user">
+                <option value="" disabled selected>Select a user</option>
+                {% for user in users %}
+                    <option value="{{ user.user }}">{{ user.user }}</option>
+                {% endfor %}
+            </select>
+
+        </section>
+
+        <section>
+            <h2>Select Section</h2>
+            <select name="section" required>
+                <option value="" disabled selected>Select a section</option>
+                {% for section in sections %}
+                    <option value="{{ section }}">{{ section }}</option>
+                {% endfor %}
+            </select>
+
+        </section>
+
+        <button type="submit">Assign Section</button>
+    </form>
+
+    <section>
+        <h2>Message</h2>
+        {{ message }}
+    </section>
+
+</body>
+</html>
