@@ -4,45 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assign Section</title>
-    <!-- Add your CSS styles here -->
-    <style>
-        /* Add your custom styles here */
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
-
-    <h1>Assign Section</h1>
-
+<div class="horizontal-center">
+        <h3 class="form-title">Assign Section</h3>
+    </div>
+<div class="horizontal-center">
+<table class="container">
     <form action="/assignSection/" method="post">
     {% csrf_token %}
-        <section>
-            <select name="user">
-                <option value="" disabled selected>Select a user</option>
-                {% for user in users %}
-                    <option value="{{ user.user }}">{{ user.user }}</option>
-                {% endfor %}
-            </select>
 
-        </section>
-
-        <section>
-            <h2>Select Section</h2>
-            <select name="section" required>
-                <option value="" disabled selected>Select a section</option>
-                {% for section in sections %}
-                    <option value="{{ section }}">{{ section }}</option>
-                {% endfor %}
-            </select>
-
-        </section>
-
-        <button type="submit">Assign Section</button>
+    <tr>
+                    <td><label for="accountDropdown">Select User:</label></td>
+                    <td>
+                        <select name="userId" id="accountDropdown">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+    </tr>
+    <tr>
+                    <td><label for="section">Select Section:</label></td>
+                    <td>
+                        <select name="sectionId" id="sectionDropdown">
+                            {% for section in sections %}
+                                <option value="{{ section.id }}">{{ section }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><button class="back" type="button" onclick="location.href='/dashboard/'">Back</button></td>
+                    <td><button type="submit">Assign Section</button></td>
+                </tr>
+    </table>
     </form>
+    </div>
+    <div class = "container">
 
-    <section>
-        <h2>Message</h2>
         {{ message }}
-    </section>
+    </div>
+
+
+
 
 </body>
 </html>

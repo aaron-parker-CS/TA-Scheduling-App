@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -13,7 +13,7 @@ from Classes.EnterSkillClass import EnterSkillClass
 from Classes.LoginClass import LoginClass
 from Classes.SectionClass import SectionClass
 from Classes.UpdateInfo import updateInfo
-from Classes.AssignSectionUserClass import AssignSectionClass
+
 from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
@@ -340,41 +340,23 @@ class editInfo(View):
                                                       "skills": request.user.infoskills, 'message': message})
 
 class assignSection(View):
-
     def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/')
         try:
             sections = list(Section.objects.all())
-            users = list(Info.objects.filter(type="TA"))
-            # Append the Info object for the current user to the users list
-            current_user_info = Info.objects.get(user=request.user.info.user)
-            users.extend([current_user_info])  # Using extend instead of append to merge lists
+            users = User.objects.all()
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
             logging.exception("An error occurred in the 'get' method.")
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
 
     def post(self, request):
-        try:
-            selected_user = request.POST.get('user')
-            print("UNDER:")
-            print(selected_user)
-            selected_section = request.POST.get('section')
+        user = User.objects.get(id=request.POST.get('userId'))
+        section = Section.objects.get(id=request.POST.get('sectionId'))
 
-            print(selected_section)
-            message = f"Assigned {selected_user} to {selected_section} section."
-
-            # Create an instance of AssignSectionClass
-            methods = AssignSectionClass()
-            # Assuming find_section and find_user are methods of AssignSectionClass
-            section_obj = methods.find_section(selected_section)
-            user_obj = methods.find_user(selected_user)
-
-            # Ensure to check for None using `is not None`
-            if section_obj is not None:
-                user_assignment_obj = UserAssignment.objects.create(user_id=user_obj, section=section_obj)
-
-            # Add a return statement to properly end the method
-            return render(request, "assign-section.html", {"message": message})
-        except Exception as e:
-            logging.exception("An error occurred in the 'post' method.")
-            return render(request, "assign-section.html", {"message": f"Exception Error: {str(e)}"})
+        if assign_user_to_section(user, section):
+            return redirect('/')
+        else:
+            return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
+                                                         'message': 'Unable to assign user'})
