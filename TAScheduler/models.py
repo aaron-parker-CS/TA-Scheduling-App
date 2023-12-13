@@ -1,7 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
-#from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
 
@@ -72,7 +71,7 @@ class Info(models.Model):
     1-1 with the User model
     Django recommended way of extending functionality of the User model
     Usage:
-        user = User.objects.get(user    name="fred")
+        user = User.objects.get(username="fred")
         user_phone = user.Info.phone
     '''
     TYPE_CHOICES = [
@@ -84,8 +83,6 @@ class Info(models.Model):
     phone = models.CharField(max_length=20, null=False, default="N/A")
     type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[0][0])
     skills = models.CharField(max_length=500, null=True, default='')
-    # assigned_courses = JSONField(null=True, blank=True)
-    # assigned_sections = JSONField
 
 class UserAssignment(models.Model):
     # M-N

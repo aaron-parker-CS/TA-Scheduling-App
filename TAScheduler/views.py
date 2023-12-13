@@ -17,7 +17,6 @@ from Classes.UpdateInfo import updateInfo
 from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
-import logging
 
 # Create your views here.
 class Home(View):
