@@ -12,7 +12,11 @@ def assign_user_to_course(user, course):
         print(e)
         return False
 
+
 def assign_user_to_section(user, section):
+    if user is None or section is None:
+        return False
+
     course = Course.objects.get(id=section.course_id)
     if UserAssignment.objects.filter(user_id=user, section=section, course=course).exists():
         return False

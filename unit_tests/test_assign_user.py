@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from Classes.AssignUserClass import assign_user_to_course
-from TAScheduler.models import User, Info, Course
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
+from TAScheduler.models import User, Info, Course, Section
 
 
 class TestAssignUser(TestCase):
@@ -13,6 +13,8 @@ class TestAssignUser(TestCase):
         self.test_types.save()
         self.test_course = Course(course_num=478, semester='Fa', year=2023, description='Introduction to testing')
         self.test_course.save()
+        self.test_section = Section(course=self.test_course, location="EMS99")
+        self.test_section.save()
 
     def test_assign_user_course_success(self):
         result = assign_user_to_course(self.test_user, self.test_course)
@@ -26,3 +28,17 @@ class TestAssignUser(TestCase):
         assign_user_to_course(self.test_user, self.test_course)
         result = assign_user_to_course(self.test_user, self.test_course)
         self.assertFalse(result, 'assign course fails to return false for duplicate course assignment')
+
+    def test_assign_user_section_success(self):
+        result = assign_user_to_section(self.test_user, self.test_section)
+        self.assertTrue(result, 'assign course fails to return true for correct inputs')
+
+    def test_assign_user_section_fail(self):
+        result = assign_user_to_section(None, None)
+        self.assertFalse(result, 'assign section fails to return false for incorrect inputs')
+
+    def test_assign_section_twice(self):
+        assign_user_to_section(self.test_user, self.test_section)
+        result = assign_user_to_section(self.test_user, self.test_section)
+        self.assertFalse(result, 'assign section fails to return false for duplicate course assignment')
+
