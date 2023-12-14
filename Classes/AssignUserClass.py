@@ -7,7 +7,7 @@ def assign_user_to_course(user, course):
     if UserAssignment.objects.filter(user_id=user, course=course).exists():
         return False
     try:
-        new_assignment = UserAssignment(user_id=user, course=course)
+        new_assignment = UserAssignment(user_id=user, course=course, section=None)
         new_assignment.save()
         return True
     except Exception as e:
@@ -23,9 +23,15 @@ def assign_user_to_section(user, section):
     if UserAssignment.objects.filter(user_id=user, section=section, course=course).exists():
         return False
     try:
-        new_assignment = UserAssignment(user_id=user, section=section, course=course)
-        new_assignment.save()
-        return True
+        if UserAssignment.objects.filter(user_id=user, course=course, section=None).exists():
+            assignment = UserAssignment.objects.get(user_id=user, section=None, course=course)
+            assignment.section = section
+            assignment.save()
+            return True
+        else:
+            new_assignment = UserAssignment(user_id=user, course=course, section=section)
+            new_assignment.save()
+            return True
     except Exception as e:
         print(e)
         return False
