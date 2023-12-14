@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
-from TAScheduler.models import User, Info, Course, Section
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course
+from TAScheduler.models import User, Info, Course, Section, UserAssignment
 
 
 class TestAssignUser(TestCase):
@@ -41,4 +41,12 @@ class TestAssignUser(TestCase):
         assign_user_to_section(self.test_user, self.test_section)
         result = assign_user_to_section(self.test_user, self.test_section)
         self.assertFalse(result, 'assign section fails to return false for duplicate course assignment')
+
+    def test_get_sections_by_course(self):
+        assignment = UserAssignment(user_id=self.test_user, course=self.test_course)
+        assignment.save()
+        section_list = []
+        section_list = get_sections_by_course(self.test_user, section_list)
+        self.assertIn(self.test_section, section_list,
+                      msg="Get sections by course fails to fetch the section by user assignments")
 

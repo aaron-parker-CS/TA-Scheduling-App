@@ -1,4 +1,4 @@
-from TAScheduler.models import UserAssignment, Course
+from TAScheduler.models import UserAssignment, Course, Section
 
 
 def assign_user_to_course(user, course):
@@ -28,3 +28,11 @@ def assign_user_to_section(user, section):
         print(e)
         return False
 
+
+def get_sections_by_course(user, arr):
+    assigned_courses = list(UserAssignment.objects.filter(user_id=user.id))
+    for course in assigned_courses:
+        list_sections = list(Section.objects.filter(course=course.course))
+        for section in list_sections:
+            arr.append(section)
+    return arr

@@ -1,3 +1,4 @@
+import logging
 import string
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -5,7 +6,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -275,7 +276,7 @@ class createSection(View):
 
 class EnterSkill(View):
     def get(self, request):
-        skills = User.Info.skills
+        skills = request.user.info.skills
         esc = EnterSkillClass()
         skill_list = esc.create_skill_list(skills)
 
@@ -343,7 +344,9 @@ class assignSection(View):
         if not request.user.is_authenticated:
             return redirect('/')
         try:
-            sections = list(Section.objects.all())
+            # Filter sections by sections assigned to user
+            sections = []
+            sections = get_sections_by_course(request.user, sections)
             users = User.objects.all()
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
