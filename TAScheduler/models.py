@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import SET_NULL
 
-
 # Create your models here.
 
 
@@ -104,7 +103,6 @@ class UserHasSkill(models.Model):
     skill = models.ForeignKey(to=Skill, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
-
 class UserAssignment(models.Model):
     # M-N
     # A user may have many section assignments, a section may have more than one TA or lecturer assignment
@@ -122,4 +120,4 @@ class UserAssignment(models.Model):
             return None
 
     def __str__(self):
-        return str(self.user_id) + ' is asssigned to ' + str(self.course) + ' section ' + str(self.section)
+        return str(self.user_id) + ' is assigned to ' + str(self.course) + ' section ' + str(self.section)
