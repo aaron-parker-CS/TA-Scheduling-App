@@ -333,21 +333,18 @@ class editInfo(View):
         first_name = request.user.first_name
         last_name = request.user.last_name
         phone = request.user.info.phone
-        skills = request.user.info.skills
         return render(request, 'edit-info.html', {"first": first_name, "last": last_name,
-                                                  "phone": phone, "skills": skills})
+                                                  "phone": phone})
 
     def post(self, request):
         first = request.POST.get('first-name')
         last = request.POST.get('last-name')
         phone = request.POST.get('phone')
-        skills = request.POST.get('skills')
         message = ''
 
-        result = updateInfo(request.user, first, last, phone, skills, message)
+        result = updateInfo(request.user, first, last, phone, message)
         if result:
             return redirect('/')
         else:
             return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
-                                                      "phone": request.user.info.phone,
-                                                      "skills": request.user.infoskills, 'message': message})
+                                                      "phone": request.user.info.phone, 'message': message})
