@@ -20,16 +20,14 @@
     {% if role == "Supervisor" or role == "Instructor" %}
     <li><a href="/assignSection/">Assign User to Section</a></li>
     {% endif %}
-    {% if role == "Teaching Assistant" %}
-    <li><a href="/enterSkill/">Enter Skill Information</a></li>
-    {% endif %}
+    <li><a href="/enterSkill/">Enter Skills</a></li>
     <li><a href="/editInfo/">Edit Personal Information</a></li>
     <li><a href="/logout/">Logout</a></li>
 
 </ul>
 
 <h3 class="form-title">Users</h3>
-<table class="dashboard-table">
+<table class="dashboard-table" style="font-family: Arial,sans-serif;">
     {% for user in users %}
         <tr>
             {% for attr in user %}
@@ -40,7 +38,7 @@
 </table>
 
 <h3 class="form-title">Courses</h3>
-<table class="dashboard-table">
+<table class="dashboard-table" style="font-family: Arial,sans-serif;">
     {% for course in courses %}
         <tr>
             {% for attr in course %}
@@ -51,7 +49,7 @@
 </table>
 
 <h3 class="form-title">Sections</h3>
-<table class="dashboard-table">
+<table class="dashboard-table" style="font-family: Arial,sans-serif;">
     {% for section in sections %}
         <tr>
             {% for attr in section %}

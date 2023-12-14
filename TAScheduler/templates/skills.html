@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Enter Skills</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/styles.css' %}">
 </head>
 <body>
+    <div class="horizontal-center">
+        <h3 class="form-title">Enter Skill Information</h3>
+    </div>
+    <br>
+
     <form method="post">
         {% csrf_token %}
-            <table>
+            <table class="container">
                 <tr>
                     <td><label for="skills">Enter Skill (ex: Python):</label></td>
                     <td><input type="text" name="skills"></td>
@@ -15,10 +22,16 @@
             </table>
     </form>
 
-<p>Current Skills:</p>
-{% for entry in skill_list %}
-    <p>{{ entry }}</p>
-{% endfor %}
-<p>{{ message }}</p>
+    <div class="horizontal-center">
+        <h4 style="text-align: center; font-family: Arial,sans-serif">Current Skills:</h4>
+            {% for entry in skill_list %}
+                <p style="text-align: center; font-family: Arial,sans-serif">{{ entry }}</p>
+            {% endfor %}
+    </div>
+    <br>
+    <div class="horizontal-center">
+        <p class="alert" style="text-align: center; font-family: Arial,sans-serif">{{ message }}</p>
+    </div>
+
 </body>
 </html>

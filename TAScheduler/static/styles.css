@@ -18,8 +18,12 @@ label {
 
 }
 
+p {
+    font-family: Arial, sans-serif;
+}
+
 a {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   font-size: 12px;
 }
 .center {
@@ -57,7 +61,8 @@ div {
 }
 
 td {
-  padding: 5px;
+    padding: 5px;
+    font-family: Arial, sans-serif;
 }
 
 tr {
