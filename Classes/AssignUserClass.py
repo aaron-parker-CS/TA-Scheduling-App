@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User, AbstractUser
+
 from TAScheduler.models import UserAssignment, Course, Section
 
 
@@ -29,7 +31,11 @@ def assign_user_to_section(user, section):
         return False
 
 
-def get_sections_by_course(user, arr):
+def get_sections_by_course(user: User, arr: list) -> list:
+    if type(arr) is not list:
+        raise ValueError('Array argument must be a list')
+    if type(user) is not User:
+        raise ValueError('User argument is not a Django User')
     assigned_courses = list(UserAssignment.objects.filter(user_id=user.id))
     for course in assigned_courses:
         list_sections = list(Section.objects.filter(course=course.course))
