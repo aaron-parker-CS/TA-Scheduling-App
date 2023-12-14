@@ -6,7 +6,8 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course, \
+    get_users_by_course
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -18,6 +19,7 @@ from Classes.UpdateInfo import updateInfo
 from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 class Home(View):
@@ -290,6 +292,7 @@ class EnterSkill(View):
             User.Info.skills + "," + skill_to_add
         return render(request, "skills.html", {})
 
+
 class assignCourse(View):
     def get(self, request):
         if not request.user.is_authenticated:
@@ -308,8 +311,8 @@ class assignCourse(View):
         if assign_user_to_course(user, course):
             return redirect('/')
         else:
-            return render(request, 'assignCourse.html', {'users': User.objects.all(),'courses': Course.objects.all(), 'message': 'Unable to assign user'})
-
+            return render(request, 'assignCourse.html', {'users': User.objects.all(), 'courses': Course.objects.all(),
+                                                         'message': 'Unable to assign user'})
 
 
 class editInfo(View):
@@ -339,6 +342,7 @@ class editInfo(View):
                                                       "phone": request.user.info.phone,
                                                       "skills": request.user.infoskills, 'message': message})
 
+
 class assignSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
@@ -346,8 +350,13 @@ class assignSection(View):
         try:
             # Filter sections by sections assigned to user
             sections = []
-            sections = get_sections_by_course(request.user, sections)
-            users = User.objects.all()
+            user = User.objects.get(id=request.user.id)
+            sections = get_sections_by_course(user, sections)
+            users = []
+            assigned_courses = UserAssignment.objects.filter(user_id=user)
+            for course in assigned_courses:
+                users = get_users_by_course(course.course, users)
+
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
             logging.exception("An error occurred in the 'get' method.")
@@ -360,5 +369,6 @@ class assignSection(View):
         if assign_user_to_section(user, section):
             return redirect('/')
         else:
-            return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
-                                                         'message': 'Unable to assign user'})
+            return render(request, 'assign-section.html',
+                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                           'message': 'Unable to assign user'})

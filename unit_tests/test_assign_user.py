@@ -1,6 +1,7 @@
 from django.test import TestCase
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course, \
+    get_users_by_course
 from TAScheduler.models import User, Info, Course, Section, UserAssignment
 
 
@@ -72,3 +73,12 @@ class TestAssignUser(TestCase):
         section_list = []
         section_list = get_sections_by_course(self.test_user, section_list)
         self.assertNotIn(new_section, section_list, msg='Unrelated section shows inside of get sections by course')
+
+    def test_get_users_by_course(self):
+        assignment = UserAssignment(user_id=self.test_user, course=self.test_course)
+        assignment.save()
+        user_list = []
+        user_list = get_users_by_course(self.test_course, user_list)
+        self.assertIn(self.test_user, user_list,
+                      msg="Get users by course fails to fetch the user by course assignments")
+
