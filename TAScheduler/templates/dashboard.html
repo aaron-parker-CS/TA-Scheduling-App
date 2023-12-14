@@ -20,6 +20,9 @@
     {% if role == "Supervisor" or role == "Instructor" %}
     <li><a href="/assignSection/">Assign User to Section</a></li>
     {% endif %}
+    {% if role == "Teaching Assistant" %}
+    <li><a href="/enterSkill/">Enter Skill Information</a></li>
+    {% endif %}
     <li><a href="/editInfo/">Edit Personal Information</a></li>
     <li><a href="/logout/">Logout</a></li>
 

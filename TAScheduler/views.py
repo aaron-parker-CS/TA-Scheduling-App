@@ -3,6 +3,8 @@ import string
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import IntegrityError
+from django.db.models import CharField
+from django.db.models.functions import Concat
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -17,7 +19,7 @@ from Classes.SectionClass import SectionClass
 from Classes.UpdateInfo import updateInfo
 
 from Classes.DeleteAccountClass import DeleteAccountClass
-from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
+from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES, Skill, UserHasSkill
 from django.contrib.auth import authenticate, login
 
 
@@ -277,20 +279,31 @@ class createSection(View):
 
 
 class EnterSkill(View):
-    def get(self, request):
-        skills = request.user.info.skills
-        esc = EnterSkillClass()
-        skill_list = esc.create_skill_list(skills)
 
-        return render(request, "skills.html", {"skill_list": skill_list})
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/')
+        skills = []
+        esc = EnterSkillClass()
+        skills = esc.load_skills(request.user, skills)
+
+        return render(request, "skills.html", {"skill_list": skills})
 
     def post(self, request):
-        skill_to_add = request.POST["skills"]
-        if User.Info.skills is None:
-            User.Info.skills + skill_to_add
-        else:
-            User.Info.skills + "," + skill_to_add
-        return render(request, "skills.html", {})
+        user = request.user
+        skill_to_add = request.POST.get('skills')
+        esc = EnterSkillClass()
+        try:
+            if esc.add_skill(user, skill_to_add):
+                message = "Skill Added"
+            else:
+                message = "You already have this skill"
+        except Exception as e:
+            message = e
+        skills = []
+        skills = esc.load_skills(request.user, skills)
+
+        return render(request, "skills.html", {"skill_list": skills, "message": message})
 
 
 class assignCourse(View):
@@ -323,24 +336,22 @@ class editInfo(View):
         first_name = request.user.first_name
         last_name = request.user.last_name
         phone = request.user.info.phone
-        skills = request.user.info.skills
         return render(request, 'edit-info.html', {"first": first_name, "last": last_name,
-                                                  "phone": phone, "skills": skills})
+                                                  "phone": phone})
 
     def post(self, request):
         first = request.POST.get('first-name')
         last = request.POST.get('last-name')
         phone = request.POST.get('phone')
-        skills = request.POST.get('skills')
         message = ''
 
-        result = updateInfo(request.user, first, last, phone, skills, message)
+        result = updateInfo(request.user, first, last, phone, message)
         if result:
             return redirect('/')
         else:
             return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
-                                                      "phone": request.user.info.phone,
-                                                      "skills": request.user.infoskills, 'message': message})
+                                                      "phone": request.user.info.phone, 'message': message})
+
 
 
 class assignSection(View):

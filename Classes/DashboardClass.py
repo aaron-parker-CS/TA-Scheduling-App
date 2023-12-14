@@ -1,20 +1,25 @@
 from Classes.AuthClass import auth_type
-from TAScheduler.models import Course, Section, User, UserAssignment, Info
+from TAScheduler.models import Course, Section, User, UserAssignment, Info, Skill, UserHasSkill
 
 
 class DashboardClass():
     def loadUsers(self, li):
         users = User.objects.all().order_by('info__type')
+
         header = ['Username', 'First Name', 'Last Name', 'User Type', 'Email', 'Phone Number', 'Skills',
                   'Assigned Courses', 'Assigned Sections']
         li.append(header)
         for user in users:
             user_type = auth_type(user)
 
-            user_attr = [user.username, user.first_name, user.last_name, user_type, user.email, user.info.phone,
-                         user.info.skills]
+            user_attr = [user.username, user.first_name, user.last_name, user_type, user.email, user.info.phone]
             assigned_courses = ''
             assigned_sections = ''
+            skills = ''
+            assigned_skills = UserHasSkill.objects.filter(user=user)
+            for assignment in assigned_skills:
+                skills += assignment.skill.__str__() + ', '
+            user_attr.append(skills)
             assigned_course_objects = UserAssignment.objects.filter(user_id=user)
             for course in assigned_course_objects:
                 if course.str_course() not in assigned_courses:
