@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+
 from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course, \
     get_users_by_course
 from TAScheduler.models import User, Info, Course, Section, UserAssignment
@@ -14,11 +15,13 @@ class TestAssignUser(TestCase):
         self.test_types.save()
         self.test_course = Course(course_num=478, semester='Fa', year=2023, description='Introduction to testing')
         self.test_course.save()
-        self.test_section = Section(course=self.test_course, location="EMS99")
+        self.test_section = Section(course=self.test_course, section_num=388, section_type="Dis", location="EMS99")
         self.test_section.save()
 
     def test_assign_user_course_success(self):
         result = assign_user_to_course(self.test_user, self.test_course)
+        print("result")
+        print(result)
         self.assertTrue(result, 'assign course fails to return true for correct inputs')
 
     def test_assign_user_course_fail(self):
@@ -33,7 +36,7 @@ class TestAssignUser(TestCase):
     def test_assign_user_section_success(self):
         test_assignment = assign_user_to_course(self.test_user, self.test_course)
         result = assign_user_to_section(self.test_user, self.test_section)
-        self.assertTrue(result, 'assign course fails to return true for correct inputs')
+        self.assertTrue(result, 'assign section fails to return true for correct inputs')
 
     def test_assign_user_section_fail(self):
         result = assign_user_to_section(None, None)
