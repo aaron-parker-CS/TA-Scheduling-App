@@ -20,11 +20,12 @@ def assign_user_to_section(user, section):
         return False
 
     course = Course.objects.get(id=section.course_id)
-    if UserAssignment.objects.filter(user_id=user, section=section, course=course).exists():
+    if not UserAssignment.objects.filter(user_id=user, course=course).exists():
         return False
     try:
-        new_assignment = UserAssignment(user_id=user, section=section, course=course)
-        new_assignment.save()
+        assignment = UserAssignment.objects.get(user_id=user, course=course)
+        assignment.section = section
+        assignment.save()
         return True
     except Exception as e:
         print(e)

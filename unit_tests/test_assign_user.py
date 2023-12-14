@@ -31,6 +31,7 @@ class TestAssignUser(TestCase):
         self.assertFalse(result, 'assign course fails to return false for duplicate course assignment')
 
     def test_assign_user_section_success(self):
+        test_assignment = assign_user_to_course(self.test_user, self.test_course)
         result = assign_user_to_section(self.test_user, self.test_section)
         self.assertTrue(result, 'assign course fails to return true for correct inputs')
 
