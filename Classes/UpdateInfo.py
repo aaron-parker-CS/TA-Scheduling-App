@@ -1,7 +1,7 @@
 from TAScheduler.models import User, Info
 
 
-def updateInfo(user, fname, lname, phone, skills, message=''):
+def updateInfo(user, fname, lname, phone, message=''):
     if user is None:
         message = 'User may not be empty'
         return False
