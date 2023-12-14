@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import SET_NULL
 
 
 # Create your models here.
@@ -63,7 +64,8 @@ class Section(models.Model):
             dayStr += 'U'
         if self.section_is_on_friday:
             dayStr += 'F'
-        return (self.course.__str__() + '-' + str(self.section_num) + ' ' + dayStr + ' ' +str(self.section_start_time) +
+        return (self.course.__str__() + '-' + str(self.section_num) + ' ' + dayStr + ' ' + str(
+            self.section_start_time) +
                 '-' + str(self.section_end_time))
 
 
@@ -83,7 +85,24 @@ class Info(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, null=False, default="N/A")
     type = models.CharField(max_length=2, null=False, choices=TYPE_CHOICES, default=TYPE_CHOICES[0][0])
-    skills = models.CharField(max_length=500, null=True, default='')
+
+
+class Skill(models.Model):
+    skill = models.CharField(max_length=25, null=True)
+
+    def __str__(self):
+        return str(self.skill)
+
+    # def save(self):
+    #     if not Skill.objects.filter(skill=self.skill).exists:
+    #         super(Skill, self).save()
+    #
+    #     return
+
+
+class UserHasSkill(models.Model):
+    skill = models.ForeignKey(to=Skill, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
 
 class UserAssignment(models.Model):

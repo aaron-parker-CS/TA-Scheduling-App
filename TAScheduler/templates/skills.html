@@ -10,16 +10,15 @@
             <table>
                 <tr>
                     <td><label for="skills">Enter Skill (ex: Python):</label></td>
-                    <td><input type="text" name="skill"></td>
+                    <td><input type="text" name="skills"></td>
                 </tr>
             </table>
     </form>
 
-<ul>
-    <p>Current Skills:</p>
-    {% for i in skill_list %}
-        <li>i</li>
-    {% endfor %}
-</ul>
+<p>Current Skills:</p>
+{% for entry in skill_list %}
+    <p>{{ entry }}</p>
+{% endfor %}
+<p>{{ message }}</p>
 </body>
 </html>
