@@ -1,3 +1,4 @@
+import logging
 import string
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -5,7 +6,8 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, auth_assignment
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course, \
+    get_users_by_course
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -17,6 +19,7 @@ from Classes.UpdateInfo import updateInfo
 from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES
 from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 class Home(View):
@@ -275,7 +278,7 @@ class createSection(View):
 
 class EnterSkill(View):
     def get(self, request):
-        skills = User.Info.skills
+        skills = request.user.info.skills
         esc = EnterSkillClass()
         skill_list = esc.create_skill_list(skills)
 
@@ -288,6 +291,7 @@ class EnterSkill(View):
         else:
             User.Info.skills + "," + skill_to_add
         return render(request, "skills.html", {})
+
 
 class assignCourse(View):
     def get(self, request):
@@ -307,8 +311,8 @@ class assignCourse(View):
         if assign_user_to_course(user, course):
             return redirect('/')
         else:
-            return render(request, 'assignCourse.html', {'users': User.objects.all(),'courses': Course.objects.all(), 'message': 'Unable to assign user'})
-
+            return render(request, 'assignCourse.html', {'users': User.objects.all(), 'courses': Course.objects.all(),
+                                                         'message': 'Unable to assign user'})
 
 
 class editInfo(View):
@@ -338,13 +342,21 @@ class editInfo(View):
                                                       "phone": request.user.info.phone,
                                                       "skills": request.user.infoskills, 'message': message})
 
+
 class assignSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
         try:
-            sections = list(Section.objects.all())
-            users = User.objects.all()
+            # Filter sections by sections assigned to user
+            sections = []
+            user = User.objects.get(id=request.user.id)
+            sections = get_sections_by_course(user, sections)
+            users = []
+            assigned_courses = UserAssignment.objects.filter(user_id=user)
+            for course in assigned_courses:
+                users = get_users_by_course(course.course, users)
+
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
@@ -352,10 +364,9 @@ class assignSection(View):
     def post(self, request):
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
-        course = Course.objects.get(id=section.course_id)
-        authenticated = auth_assignment(user, course)
-        if authenticated:
-            if assign_user_to_section(user, section):
-                return redirect('/')
-        return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
-                                                         'message': 'Unable to assign user'})
+        if assign_user_to_section(user, section):
+            return redirect('/')
+        else:
+            return render(request, 'assign-section.html',
+                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                           'message': 'Unable to assign user'})

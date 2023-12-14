@@ -103,7 +103,7 @@ li a {
 }
 
 li a:hover {
-  background-color: #FFF;
+  background-color: slategray;
 }
 
 .dashboard-table {
