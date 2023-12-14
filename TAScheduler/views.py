@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, auth_assignment
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -347,15 +347,15 @@ class assignSection(View):
             users = User.objects.all()
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
-            logging.exception("An error occurred in the 'get' method.")
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
 
     def post(self, request):
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
-
-        if assign_user_to_section(user, section):
-            return redirect('/')
-        else:
-            return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
+        course = Course.objects.get(id=section.course_id)
+        authenticated = auth_assignment(user, course)
+        if authenticated:
+            if assign_user_to_section(user, section):
+                return redirect('/')
+        return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
                                                          'message': 'Unable to assign user'})

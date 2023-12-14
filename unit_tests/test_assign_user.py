@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
-from TAScheduler.models import User, Info, Course, Section
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, auth_assignment
+from TAScheduler.models import User, Info, Course, Section, UserAssignment
 
 
 class TestAssignUser(TestCase):
@@ -13,11 +13,13 @@ class TestAssignUser(TestCase):
         self.test_types.save()
         self.test_course = Course(course_num=478, semester='Fa', year=2023, description='Introduction to testing')
         self.test_course.save()
-        self.test_section = Section(course=self.test_course, location="EMS99")
+        self.test_section = Section(course=self.test_course, section_num=388, section_type="Dis", location="EMS99")
         self.test_section.save()
 
     def test_assign_user_course_success(self):
         result = assign_user_to_course(self.test_user, self.test_course)
+        print("result")
+        print(result)
         self.assertTrue(result, 'assign course fails to return true for correct inputs')
 
     def test_assign_user_course_fail(self):
@@ -31,7 +33,7 @@ class TestAssignUser(TestCase):
 
     def test_assign_user_section_success(self):
         result = assign_user_to_section(self.test_user, self.test_section)
-        self.assertTrue(result, 'assign course fails to return true for correct inputs')
+        self.assertTrue(result, 'assign section fails to return true for correct inputs')
 
     def test_assign_user_section_fail(self):
         result = assign_user_to_section(None, None)
@@ -42,3 +44,8 @@ class TestAssignUser(TestCase):
         result = assign_user_to_section(self.test_user, self.test_section)
         self.assertFalse(result, 'assign section fails to return false for duplicate course assignment')
 
+    def test_auth_assignment(self):
+        user_assignment = UserAssignment(user_id=self.test_user, course=self.test_course)
+        user_assignment.save()
+        auth = auth_assignment(self.test_user, self.test_course)
+        self.assertTrue(auth, "Assignment authentication failed.")
