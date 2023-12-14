@@ -19,7 +19,6 @@ def updateInfo(user, fname, lname, phone, skills, message=''):
     user.first_name = fname
     user.last_name = lname
     user.info.phone = phone
-    user.info.skills = skills
 
     try:
         user.save()
