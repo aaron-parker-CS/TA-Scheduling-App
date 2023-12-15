@@ -282,7 +282,7 @@ class EnterSkill(View):
             return redirect('/')
         skills = []
         esc = EnterSkillClass()
-        skills = esc.load_skills(request.user, skills)
+        skills = esc.load_skills(request.user)
 
         return render(request, "skills.html", {"skill_list": skills})
 
@@ -297,8 +297,7 @@ class EnterSkill(View):
                 message = "You already have this skill"
         except Exception as e:
             message = e
-        skills = []
-        skills = esc.load_skills(request.user, skills)
+        skills = esc.load_skills(request.user)
 
         return render(request, "skills.html", {"skill_list": skills, "message": message})
 

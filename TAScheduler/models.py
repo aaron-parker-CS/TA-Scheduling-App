@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import SET_NULL
 
+
 # Create your models here.
 
 
@@ -102,6 +103,7 @@ class Skill(models.Model):
 class UserHasSkill(models.Model):
     skill = models.ForeignKey(to=Skill, on_delete=models.CASCADE)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
 
 class UserAssignment(models.Model):
     # M-N
