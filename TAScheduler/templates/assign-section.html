@@ -24,6 +24,9 @@
                                 <option value="{{ user.id }}">{{ user.username }}</option>
                             {% endfor %}
                         </select>
+                    {% if users.count == 0 %}
+                        <h3>Your course list is empty. No sections to assign.</h3>
+                    {% endif %}
                     </td>
     </tr>
     <tr>

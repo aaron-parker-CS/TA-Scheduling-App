@@ -2,15 +2,21 @@ from django.test import TestCase, Client
 from TAScheduler.models import User, UserAssignment, Course, Section, Info
 from django.test import TestCase, Client
 from TAScheduler.models import User, Info
+from django.contrib.auth import logout
 
 
-class CreateCourseTest(TestCase):
+class AssignSectionTest(TestCase):
     def setUp(self):
         self.client = Client()
-        # Creating a user with privileges to assign courses
+        # Creating a user with privileges to assign sections
         self.admin_user = User.objects.create_user('admin', 'admin@example.com')
         self.admin_user.set_password('adminpassword')
         self.admin_user.save()
+
+        self.instructor_user = User.objects.create_user('instructor', 'instructor@example.com')
+        self.instructor_user.set_password('instructorpassword')
+        self.instructor_user.save()
+
         self.test_course = Course.objects.create(course_num=555, semester='Fa', year=2025, description='Intro to '
                                                                                                        'testing')
         self.test_course.save()
@@ -22,7 +28,10 @@ class CreateCourseTest(TestCase):
                                                    location='Testing room')
         self.test_section.save()
         self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
-        self.client.post('/assignCourse/', {'userId': self.admin_user.id, 'courseId': self.test_course.id})
+        # self.client.post('/assignCourse/', {'userId': self.instructor_user.id, 'courseId': self.test_course.id})
+
+        logout(self.client)
+        self.client.post('/', {'username': 'instructor', 'password': 'instructorpassword'})
 
     def test_assign_section(self):
         self.client.post('/assignSection/', {'userId': self.admin_user.id, 'sectionId': self.test_section.id})
@@ -36,3 +45,9 @@ class CreateCourseTest(TestCase):
         resp = self.client.post('/assignSection/', {'userId': self.admin_user.id, 'sectionId': self.test_section.id})
         self.assertContains(resp, 'Unable to assign user')
 
+    def test_empty_course_list(self):
+
+        resp = self.client.post('/assignSection/', {'userId': self.instructor_user.id, 'sectionId': self.test_section.id})
+        print(resp.content.decode())
+        print("BELOW")
+        self.assertContains(resp, "")

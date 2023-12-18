@@ -385,7 +385,10 @@ class assignSection(View):
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
         if assign_user_to_section(user, section):
-            return redirect('/')
+
+            return render(request, 'assign-section.html',
+                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                           'message': f'{{user.username}} successfully assigned to {{section}}'})
         else:
             return render(request, 'assign-section.html',
                           {'users': User.objects.all(), 'sections': Section.objects.all(),
