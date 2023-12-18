@@ -18,7 +18,10 @@ class DashboardClass():
             skills = ''
             assigned_skills = UserHasSkill.objects.filter(user=user)
             for assignment in assigned_skills:
-                skills += assignment.skill.__str__() + ', '
+                if skills == '':
+                    skills += assignment.skill.__str__()
+                else:
+                    skills += ', ' + assignment.skill.__str__()
             user_attr.append(skills)
             assigned_course_objects = UserAssignment.objects.filter(user_id=user)
             for course in assigned_course_objects:

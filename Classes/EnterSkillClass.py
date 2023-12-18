@@ -22,7 +22,8 @@ class EnterSkillClass:
 
         return skill_list
 
-    def load_skills(self, user, skill_list):
+    def load_skills(self, user):
+        skill_list = []
         skill_assignments = UserHasSkill.objects.filter(user=user)
         for assignment in skill_assignments:
             skill_list.append(assignment.skill)
@@ -33,10 +34,8 @@ class EnterSkillClass:
         if skill_to_add == "":
             raise ValueError("Line was blank")
 
-        check_white_space = skill_to_add.split(" ")
-        if len(check_white_space) > 1:
+        if " " in str(skill_to_add):
             raise ValueError("Please enter one word(ex: Python)")
-
 
         skills = None
         if Skill.objects.filter(skill=skill_to_add).exists():
