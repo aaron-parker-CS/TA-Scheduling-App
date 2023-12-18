@@ -28,7 +28,7 @@ class AssignSectionTest(TestCase):
                                                    location='Testing room')
         self.test_section.save()
         self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
-        # self.client.post('/assignCourse/', {'userId': self.instructor_user.id, 'courseId': self.test_course.id})
+        self.client.post('/assignCourse/', {'userId': self.instructor_user.id, 'courseId': self.test_course.id})
 
         logout(self.client)
         self.client.post('/', {'username': 'instructor', 'password': 'instructorpassword'})
@@ -45,8 +45,8 @@ class AssignSectionTest(TestCase):
         resp = self.client.post('/assignSection/', {'userId': self.admin_user.id, 'sectionId': self.test_section.id})
         self.assertContains(resp, 'Unable to assign user')
 
-    def test_empty_course_list(self):
-
-        resp = self.client.post('/assignSection/', {'userId': self.instructor_user.id, 'sectionId': self.test_section.id})
+    def test_empty_section_list(self):
+        UserAssignment.objects.all().delete()
+        resp = self.client.get('/assignSection/', {'userId': self.instructor_user.id, 'sectionId': self.test_section.id})
         print(resp.content.decode())
-        self.assertContains(resp, "Your course list is empty. No sections to assign.")
+        self.assertContains(resp, "Your section list is empty. No sections to assign.")
