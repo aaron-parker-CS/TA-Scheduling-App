@@ -63,3 +63,23 @@ class LoginAcceptanceTest(TestCase):
         resp = self.client.get("/dashboard/")
         self.assertRedirects(response=resp, expected_url='/', status_code=302,
                              target_status_code=200, fetch_redirect_response=True)
+
+    def test_login_as_instructor(self):
+        new_user = User.objects.create(username='test_instructor')
+        new_user.set_password('password1')
+        new_user.save()
+        new_info = Info.objects.create(user=new_user, type='IN')
+        new_info.save()
+        self.client.post('/', {'username': new_user.username, 'password': 'password1'})
+        response = self.client.get('/dashboard/', {})
+        self.assertContains(response, 'Instructor')
+
+    def test_login_as_instructor(self):
+        new_user = User.objects.create(username='test_TA')
+        new_user.set_password('password2')
+        new_user.save()
+        new_info = Info.objects.create(user=new_user, type='TA')
+        new_info.save()
+        self.client.post('/', {'username': new_user.username, 'password': 'password2'})
+        response = self.client.get('/dashboard/', {})
+        self.assertContains(response, 'Teaching Assistant')

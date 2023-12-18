@@ -21,12 +21,12 @@ class TestLogin(TestCase):
 
     def test_validate_fields_missing_username(self):
         result = self.login_validator.validate_login_fields({},'', 'Th1$ 1$ @ t3$t')
-        self.assertEqual('This field is required', result,
+        self.assertEqual('This field is required.', result,
                          msg='Validate login does not return the correct message for missing username field')
 
     def test_validate_fields_missing_password(self):
         result = self.login_validator.validate_login_fields({},'test', '')
-        self.assertEqual('This field is required', result,
+        self.assertEqual('This field is required.', result,
                          msg='Validate login does not return the correct message for missing password field')
 
     def test_validate_fields_invalid_username(self):

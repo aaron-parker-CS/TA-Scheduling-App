@@ -53,7 +53,7 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
 
-        role = auth_type(request.user)
+        role = request.session['user_type']
         dashboard_loader = DashboardClass()
 
         user_list = []
