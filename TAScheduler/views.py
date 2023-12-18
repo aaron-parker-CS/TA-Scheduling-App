@@ -1,3 +1,4 @@
+import logging
 import string
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
@@ -7,7 +8,8 @@ from django.db.models.functions import Concat
 from django.shortcuts import render, redirect
 from django.views import View
 
-from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section
+from Classes.AssignUserClass import assign_user_to_course, assign_user_to_section, get_sections_by_course, \
+    get_users_by_course
 from Classes.AuthClass import auth_type
 from Classes.CreateAccountClass import CreateAccountClass
 from Classes.DashboardClass import DashboardClass
@@ -19,6 +21,7 @@ from Classes.UpdateInfo import updateInfo
 from Classes.DeleteAccountClass import DeleteAccountClass
 from .models import Course, Section, User, UserAssignment, Info, SEMESTER_CHOICES, Skill, UserHasSkill
 from django.contrib.auth import authenticate, login
+
 
 # Create your views here.
 class Home(View):
@@ -350,24 +353,31 @@ class editInfo(View):
                                                       "phone": request.user.info.phone, 'message': message})
 
 
+
 class assignSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
         try:
-            sections = list(Section.objects.all())
-            users = User.objects.all()
+            # Filter sections by sections assigned to user
+            sections = []
+            user = User.objects.get(id=request.user.id)
+            sections = get_sections_by_course(user, sections)
+            users = []
+            assigned_courses = UserAssignment.objects.filter(user_id=user)
+            for course in assigned_courses:
+                users = get_users_by_course(course.course, users)
+
             return render(request, "assign-section.html", {"users": users, "sections": sections, "message": ""})
         except Exception as e:
-            logging.exception("An error occurred in the 'get' method.")
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
 
     def post(self, request):
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
-
         if assign_user_to_section(user, section):
             return redirect('/')
         else:
-            return render(request, 'assign-section.html', {'users': User.objects.all(), 'sections': Section.objects.all(),
-                                                         'message': 'Unable to assign user'})
+            return render(request, 'assign-section.html',
+                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                           'message': 'Unable to assign user'})
