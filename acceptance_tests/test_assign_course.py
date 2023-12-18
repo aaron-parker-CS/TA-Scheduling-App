@@ -26,3 +26,9 @@ class CreateCourseTest(TestCase):
         self.client.get('/dashboard/', {})
         resp = self.client.post('/assignCourse/', {'userId': self.admin_user.id, 'courseId': self.test_course.id})
         self.assertContains(resp, 'Unable to assign user')
+
+    def test_empty_course_list(self):
+        Course.objects.all().delete()
+        resp = self.client.get('/assignCourse/', {})
+        print(resp.content.decode())
+        self.assertContains(resp, "Your course list is empty. No courses to assign.")

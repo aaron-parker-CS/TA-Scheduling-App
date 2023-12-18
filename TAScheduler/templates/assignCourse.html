@@ -28,11 +28,15 @@
                 <tr>
                     <td><label for="course">Select Course:</label></td>
                     <td>
+                    {% if courses %}
                         <select name="courseId" id="courseDropdown">
                             {% for course in courses %}
                                 <option value="{{ course.id }}">{{ course }}</option>
                             {% endfor %}
                         </select>
+                    {% else %}
+                    <h3>Your course list is empty. No courses to assign.</h3>
+                    {% endif %}
                     </td>
                 </tr>
                 <tr>

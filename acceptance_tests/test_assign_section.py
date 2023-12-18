@@ -13,6 +13,7 @@ class AssignSectionTest(TestCase):
         self.admin_user.set_password('adminpassword')
         self.admin_user.save()
 
+        # Creating an instructor
         self.instructor_user = User.objects.create_user('instructor', 'instructor@example.com')
         self.instructor_user.set_password('instructorpassword')
         self.instructor_user.save()
@@ -27,10 +28,15 @@ class AssignSectionTest(TestCase):
                                                    section_end_time='10:30',
                                                    location='Testing room')
         self.test_section.save()
+
+        # Assigning section to instructor after login
         self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
         self.client.post('/assignCourse/', {'userId': self.instructor_user.id, 'courseId': self.test_course.id})
 
+        #logout ADMIN
         logout(self.client)
+
+        #login INSTRUCTOR
         self.client.post('/', {'username': 'instructor', 'password': 'instructorpassword'})
 
     def test_assign_section(self):
@@ -47,6 +53,6 @@ class AssignSectionTest(TestCase):
 
     def test_empty_section_list(self):
         UserAssignment.objects.all().delete()
-        resp = self.client.get('/assignSection/', {'userId': self.instructor_user.id, 'sectionId': self.test_section.id})
+        resp = self.client.get('/assignSection/', {})
         print(resp.content.decode())
         self.assertContains(resp, "Your section list is empty. No sections to assign.")
