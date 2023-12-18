@@ -1,7 +1,7 @@
 from django.test import TestCase
-from TAScheduler.models import User, UserAssignment, Course, Section, Info, SEMESTER_CHOICES
-from django.db import IntegrityError, DataError
+
 from Classes.DashboardClass import DashboardClass
+from TAScheduler.models import User, Course, Section, UserAssignment
 
 
 class TestLoadUsers(TestCase):
@@ -33,3 +33,54 @@ class TestLoadUsers(TestCase):
         self.dashboard.loadUsers(li)
         self.assertEqual(li[1],
                          ['user1', 'John', 'Doe', 'Supervisor', 'john@example.com', 'N/A', '', '', ''])
+
+    def test_load_courses_empty(self):
+        li = []
+        self.dashboard.loadCourses(li)
+        self.assertEqual(len(li), 1, msg='Loading no courses should have been header row only.')
+
+    def test_load_courses(self):
+        li = []
+        new_course = Course(course_num=351, semester='Fa', year=2023, description='Test Course')
+        new_course.save()
+        self.dashboard.loadCourses(li)
+        self.assertEqual(len(li), 2, msg='Loading courses failed to load header row and course row.')
+
+    def test_load_sections_empty(self):
+        li = []
+        self.dashboard.loadSections(li)
+        self.assertEqual(len(li), 1,
+                         msg='Loading no sections should have been of length 1 to include only header row.')
+
+    def test_load_sections(self):
+        li = []
+        new_course = Course(course_num=351, semester='Fa', year=2023, description='Test Course')
+        new_course.save()
+        new_section = Section(course=new_course, section_num=400, section_start_time='00:01', section_end_time='00:02',
+                              section_type='LEC', location='Test')
+        new_section.save()
+        self.dashboard.loadSections(li)
+        self.assertEqual(len(li), 2,
+                         msg='Loading sections should be of length 2 to include only header and new section')
+
+    def test_load_TAUsers(self):
+        li = []
+        self.dashboard.loadTAUsers(li)
+        self.assertEqual(len(li), 3)
+        self.assertNotIn('Username', li[0], msg='Username should not be included in the list')
+
+    def test_load_items(self):
+        li = []
+        self.dashboard.loadItems(UserAssignment, li)
+        self.assertEqual(len(li), 0, msg='LoadItems should not populate list as no UserAssignments exist.')
+
+    def test_load_items_sections(self):
+        li = []
+        new_course = Course(course_num=351, semester='Fa', year=2023, description='Test Course')
+        new_course.save()
+        new_section = Section(course=new_course, section_num=400, section_start_time='00:01', section_end_time='00:02',
+                              section_type='LEC', location='Test')
+        new_section.save()
+        self.dashboard.loadItems(Section, li)
+        self.assertEqual(len(li), 2,
+                         msg='Load items by type should return the same value as that specific load item type')

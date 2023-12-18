@@ -38,7 +38,12 @@ class DashboardClass():
 
     def loadTAUsers(self, li):
         li = self.loadUsers(li)
-        [user.pop(5) for user in li]
+        # Remove username
+        [user.pop(0) for user in li]
+        # Remove phone number
+        [user.pop(4) for user in li]
+        # Remove skill information
+        [user.pop(4) for user in li]
         return li
 
     def loadCourses(self, li):
