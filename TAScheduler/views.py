@@ -363,7 +363,7 @@ class assignSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not request.session['user_type'] == 'Supervisor' or not request.session['user_type'] == 'Instructor':
+        if not request.session['user_type'] == 'Supervisor' and not request.session['user_type'] == 'Instructor':
             raise PermissionDenied()
         try:
             # Filter sections by sections assigned to user
@@ -380,7 +380,7 @@ class assignSection(View):
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
 
     def post(self, request):
-        if not request.session['user_type'] == 'Supervisor' or not request.session['user_type'] == 'Instructor':
+        if not request.session['user_type'] == 'Supervisor' and not request.session['user_type'] == 'Instructor':
             raise PermissionDenied()
 
         user = User.objects.get(id=request.POST.get('userId'))
