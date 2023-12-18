@@ -49,5 +49,4 @@ class AssignSectionTest(TestCase):
 
         resp = self.client.post('/assignSection/', {'userId': self.instructor_user.id, 'sectionId': self.test_section.id})
         print(resp.content.decode())
-        print("BELOW")
-        self.assertContains(resp, "")
+        self.assertContains(resp, "Your course list is empty. No sections to assign.")
