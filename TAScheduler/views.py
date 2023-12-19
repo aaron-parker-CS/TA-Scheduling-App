@@ -349,8 +349,8 @@ class editInfo(View):
         phone = request.POST.get('phone')
         message = ''
 
-        result = updateInfo(request.user, first, last, phone, message)
-        if result:
+        message = updateInfo(request.user, first, last, phone, message)
+        if message == 'True':
             return redirect('/')
         else:
             return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
