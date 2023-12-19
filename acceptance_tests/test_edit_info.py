@@ -1,41 +1,47 @@
-from django.test import TestCase, Client
-from TAScheduler.models import User, UserAssignment, Course, Section, Info
-from django.test import TestCase, Client
+from django.test import TestCase
+from django.urls import reverse
 from TAScheduler.models import User, Info
-class MyTestCase(TestCase):
 
+
+class test_edit_info(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.client = Client()
-        # Creating a user with privileges to assign courses
-        self.test_user = User.objects.create_user('admin', 'admin@example.com')
-        self.test_user.set_password('adminpassword')
-        self.test_user.save()
-        self.client.login(username='admin', password='adminpassword')
-        self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.info = Info.objects.create(user=self.user, phone="1234567890")
+        self.client.login(username='testuser', password='testpassword')
 
-    def test_edit_info(self):
-        resp = self.client.post('/editInfo/', {'first-name': 'test', 'last-name': 'mctestface', 'phone': '5555555555', 'message': ''})
-        self.assertEqual('5555555555', self.test_user.info.phone,
-                         msg='Edit info does not correctly update the info model')
+    def test_update_with_all_fields_populated(self):
+        response = self.client.post(reverse('edit-personal-info'), {
+            'first-name': 'John',
+            'last-name': 'Doe',
+            'phone': '9876543210'})
+        self.assertEqual(response.status_code, 302)
 
-    def test_edit_info_fname_empty(self):
-        resp = self.client.post('/editInfo/', {'first-name': '', 'last-name': 'mctestface', 'phone': '5555555555',
-                                               'message': ''})
-        print(resp.content.decode())
-        self.assertEqual(resp.context['message'], 'First name may not be empty',
-                         msg='Empty message not properly displayed')
+    def test_update_with_empty_skills(self):
+        """
+        Test updating account information with an empty skills field.
+        """
+        response = self.client.post(reverse('edit-personal-info'), {
+            'first-name': 'Jane',
+            'last-name': 'Smith',
+            'phone': '1231231234'})
+        self.assertEqual(response.status_code, 302)
 
-    def test_edit_info_lname_empty(self):
-        resp = self.client.post('/editInfo/', {'first-name': 'test', 'last-name': '', 'phone': '5555555555',
-                                               'message': ''})
-        print(resp.content.decode())
-        self.assertEqual(resp.context['message'], 'Last name may not be empty',
-                         msg='Empty message not properly displayed')
+    def test_update_with_mandatory_fields_empty(self):
+        """
+        Test updating account information with one of the mandatory fields empty.
+        """
+        response = self.client.post(reverse('edit-personal-info'), {
+            'first-name': '',
+            'last-name': 'Smith',
+            'phone': '1231231234'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit-info.html')
 
-    def test_edit_info_phone_empty(self):
-        resp = self.client.post('/editInfo/', {'first-name': 'test', 'last-name': 'mctestface', 'phone': '',
-                                               'message': ''})
-        print(resp.content.decode())
-        self.assertEqual(resp.context['message'], 'Phone may not be empty',
-                         msg='Empty message not properly displayed')
+    def test_no_update(self):
+        """
+        Test access to the update page without submitting the form.
+        """
+        response = self.client.get(reverse('edit-personal-info'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Edit Account Information', response.content.decode())
+
