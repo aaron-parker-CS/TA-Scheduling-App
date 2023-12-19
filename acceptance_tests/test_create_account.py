@@ -7,8 +7,11 @@ from TAScheduler.models import User, Info
 class AccountCreationTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.test_user = User.objects.create_user(username="testuser", email="testuser@example.com",
-                                                  password="testpassword123")
+        self.test_user = User.objects.create(username="user", email="testuser@example.com")
+        self.test_user.set_password('password')
+        self.test_user.save()
+        self.client.login(username=self.test_user.username, password='password')
+        resp = self.client.post('/', {'username': self.test_user.username, 'password': 'password'})
 
     def test_successful_account_creation(self):
         # Test creating an account with valid data.
@@ -106,13 +109,12 @@ class AccountCreationTest(TestCase):
                             msg="User was created without an info model assigned to it.")
 
     def test_no_admin_redirect(self):
-        self.test_user = User(username="test", password="password", email='test.account@email.com')
-        self.user_info = Info(user=self.test_user)
-        self.test_user.info.type = self.test_user.info.TYPE_CHOICES[0]
-        self.client.login(username=self.test_user.username, password=self.test_user.password)
-        self.test_user.save()
-        self.user_info.save()
-
-        self.test_user.info.type = self.test_user.info.TYPE_CHOICES[2]
+        new_user = User.objects.create(username='test2')
+        new_user.set_password('password')
+        new_user.save()
+        new_info = Info.objects.create(user=new_user, type='Instructor')
+        new_info.save()
+        self.client.get('/logout/', {})
+        self.client.post('/', {'username': new_user.username, 'password': 'password'})
         resp = self.client.get('/createAccount/')
         self.assertEqual(resp.status_code, 403, msg="Forbidden message not given to non-admin user.")

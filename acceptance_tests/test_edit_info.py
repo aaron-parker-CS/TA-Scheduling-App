@@ -44,3 +44,4 @@ class test_edit_info(TestCase):
         response = self.client.get(reverse('edit-personal-info'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('Edit Account Information', response.content.decode())
+

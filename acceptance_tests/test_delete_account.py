@@ -7,8 +7,11 @@ class DeleteAccountTest(TestCase):
     def setUp(self):
         self.client = Client()
         # Creating a user
-        self.admin_user = User.objects.create_user('admin', 'admin@example.com', 'adminpassword')
-        self.client.login(username='admin', password='adminpassword')
+        self.admin_user = User.objects.create_user('admin', 'admin@example.com')
+        self.admin_user.set_password('adminpassword')
+        self.admin_user.save()
+        self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
+        self.client.session['user_type'] = 'Supervisor'
 
     def test_successful_delete(self):
         # Use authenticate to check if the user with the specified credentials exists
@@ -30,7 +33,13 @@ class DeleteAccountTest(TestCase):
         self.assertContains(response, "User not found.", msg_prefix="Incorrect message received for delete non existing user.")
 
     def test_unauthorized_access(self):
-        self.client.logout()
+        new_user = User.objects.create(username='test2')
+        new_user.set_password('password')
+        new_user.save()
+        new_info = Info.objects.create(user=new_user, type='Instructor')
+        new_info.save()
+        self.client.get('/logout/', {})
+        self.client.post('/', {'username': new_user.username, 'password': 'password'})
         response = self.client.post('/deleteAccount/', {
             "userId": 101,
         })

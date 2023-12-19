@@ -28,6 +28,7 @@ class Home(View):
 
     def get(self, request):
         if request.user.is_authenticated:
+            request.session['user_type'] = auth_type(request.user)
             return redirect('dashboard/')
         return render(request, "login.html", {})
 
@@ -40,6 +41,7 @@ class Home(View):
         if validation == 'Success':
             user = authenticate(request, username=username, password=password)
             login(request, user)
+            request.session['user_type'] = auth_type(user)
             return redirect("dashboard/", {})
         else:
             return render(request, 'login.html', {'message': validation})
@@ -51,7 +53,7 @@ class Dashboard(View):
         if not request.user.is_authenticated:
             return redirect('/')
 
-        role = auth_type(request.user)
+        role = request.session['user_type']
         dashboard_loader = DashboardClass()
 
         user_list = []
@@ -76,12 +78,12 @@ class CreateAccount(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
         return render(request, 'create-account.html', {"types": Info.TYPE_CHOICES})
 
     def post(self, request):
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         username = request.POST["username"]
@@ -107,12 +109,12 @@ class createCourse(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
         return render(request, "createCourse.html", {"SEMESTER_CHOICES": SEMESTER_CHOICES.choices})
 
     def post(self, request):
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         course_num = request.POST.get('course_num')
@@ -157,7 +159,7 @@ class DeleteAccount(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         users = User.objects.all()
@@ -165,7 +167,7 @@ class DeleteAccount(View):
         return render(request, "DeleteAccount.html", context)
 
     def post(self, request):
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         selected_user_id = request.POST.get('userId')
@@ -181,7 +183,7 @@ class createSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         course_list = []
@@ -192,7 +194,7 @@ class createSection(View):
         return render(request, "create-section.html", context)
 
     def post(self, request):
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
 
         course_list = []
@@ -309,7 +311,7 @@ class assignCourse(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
-        if not auth_type(request.user) == 'Supervisor':
+        if not request.session['user_type'] == 'Supervisor':
             raise PermissionDenied()
         users = User.objects.all()
         courses = Course.objects.all()
@@ -317,6 +319,9 @@ class assignCourse(View):
         return render(request, "assignCourse.html", context)
 
     def post(self, request):
+        if not request.session['user_type'] == 'Supervisor':
+            raise PermissionDenied()
+
         user = User.objects.get(id=request.POST.get('userId'))
         course = Course.objects.get(id=request.POST.get('courseId'))
 
@@ -344,8 +349,8 @@ class editInfo(View):
         phone = request.POST.get('phone')
         message = ''
 
-        result = updateInfo(request.user, first, last, phone, message)
-        if result:
+        message = updateInfo(request.user, first, last, phone, message)
+        if message == 'True':
             return redirect('/')
         else:
             return render(request, 'edit-info.html', {"first": request.user.first_name, "last": request.user.last_name,
@@ -357,6 +362,8 @@ class assignSection(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/')
+        if not request.session['user_type'] == 'Supervisor' and not request.session['user_type'] == 'Instructor':
+            raise PermissionDenied()
         try:
             # Filter sections by sections assigned to user
             sections = []
@@ -372,10 +379,16 @@ class assignSection(View):
             return render(request, "assign-section.html", {"users": [], "sections": [], "message": str(e)})
 
     def post(self, request):
+        if not request.session['user_type'] == 'Supervisor' and not request.session['user_type'] == 'Instructor':
+            raise PermissionDenied()
+
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
         if assign_user_to_section(user, section):
-            return redirect('/')
+
+            return render(request, 'assign-section.html',
+                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                           'message': f'{user.username} successfully assigned to {section}'})
         else:
             return render(request, 'assign-section.html',
                           {'users': User.objects.all(), 'sections': Section.objects.all(),

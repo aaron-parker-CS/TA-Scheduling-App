@@ -8,8 +8,10 @@ class CreateCourseTest(TestCase):
     def setUp(self):
         self.client = Client()
         # Creating a user with privileges to create courses
-        self.admin_user = User.objects.create_user('admin', 'admin@example.com', 'adminpassword')
-        self.client.login(username='admin', password='adminpassword')
+        self.admin_user = User.objects.create_user('admin', 'admin@example.com')
+        self.admin_user.set_password('adminpassword')
+        self.admin_user.save()
+        self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
 
     def test_successful_course_creation(self):
         response = self.client.post('/createCourse/', {
