@@ -13,16 +13,16 @@ class TestUpdateInfo(TestCase):
 
     def test_update_success(self):
         result = updateInfo(self.test_user, 'test', 'mctestface', '555-5555', '')
-        self.assertTrue(result, 'updateInfo fails to return True for valid input.')
+        self.assertEqual('True', result, 'updateInfo fails to return True for valid input.')
 
     def test_update_missing_info(self):
         result = updateInfo(self.test_user, '', '', '', '')
-        self.assertFalse(result, 'updateInfo fails to return false for invalid input.')
+        self.assertEqual('First name may not be empty', result, 'updateInfo fails to return false for invalid input.')
 
     def testing_update_null_info(self):
         result = updateInfo(self.test_user, None, None, None, None)
-        self.assertFalse(result, 'updateInfo fails to return false for null input.')
+        self.assertEqual('First name may not be empty', result, 'updateInfo fails to return false for null input.')
 
     def testing_update_no_user(self):
         result = updateInfo(None, 'test', 'mctestface', '555-5555', '')
-        self.assertFalse(result, 'updateInfo fails to return false with no user.')
+        self.assertEqual('User may not be empty', result, 'updateInfo fails to return false with no user.')
