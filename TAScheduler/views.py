@@ -388,7 +388,7 @@ class assignSection(View):
 
             return render(request, 'assign-section.html',
                           {'users': User.objects.all(), 'sections': Section.objects.all(),
-                           'message': f'{{user.username}} successfully assigned to {{section}}'})
+                           'message': f'{user.username} successfully assigned to {section}'})
         else:
             return render(request, 'assign-section.html',
                           {'users': User.objects.all(), 'sections': Section.objects.all(),
