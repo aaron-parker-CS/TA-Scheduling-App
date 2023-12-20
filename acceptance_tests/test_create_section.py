@@ -13,10 +13,6 @@ class CreateSectionAcceptanceTest(TestCase):
         self.course = Course(course_num=101, semester='Fa', year=2023, description='Test Course')
         self.course.save()
 
-    def test_get(self):
-        response = self.client.get(self.create_section_url)
-        print(response.content.decode())
-
     def test_successful_section_creation(self):
         response = self.client.post(self.create_section_url, {
             'section': 399,
@@ -40,8 +36,8 @@ class CreateSectionAcceptanceTest(TestCase):
             "start_time": "11:11",
             "end_time": "11:12",
         })
-        self.assertEqual(response.status_code,200,"Status code misalignment. Problems may have occured.")
-        self.assertContains(response,"Validation Error")
+        self.assertEqual(response.status_code, 200, "Status code misalignment. Problems may have occured.")
+        self.assertContains(response, "Validation Error")
 
     def test_section_number_validation_high(self):
         response = self.client.post(self.create_section_url, {
@@ -56,7 +52,7 @@ class CreateSectionAcceptanceTest(TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response,"Validation Error")
+        self.assertContains(response, "Validation Error")
 
     def test_missing_required_fields_course_num(self):
         response = self.client.post(self.create_section_url, {
@@ -67,7 +63,7 @@ class CreateSectionAcceptanceTest(TestCase):
             "location": "EMS",
             "start_time": "11:11",
             "end_time": "11:12",
-            # Missing'course_num''
+            # Missing 'course_num''
         })
 
         self.assertEqual(response.status_code, 200)
@@ -96,7 +92,6 @@ class CreateSectionAcceptanceTest(TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
-        print(response.content.decode())
         self.assertContains(response, "Duplicate Section Number")
 
 

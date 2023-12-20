@@ -14,8 +14,6 @@ def auth_type(user):
 
     return role
 
-def auth_course_assignment(user, course):
-    pass
 
 class AuthClass:
     pass

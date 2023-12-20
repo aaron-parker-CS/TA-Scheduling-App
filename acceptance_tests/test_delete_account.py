@@ -29,7 +29,6 @@ class DeleteAccountTest(TestCase):
         response = self.client.post('/deleteAccount/', {
             "userId": 999,  # Some non-existent user ID
         })
-        print(response.content.decode())
         self.assertContains(response, "User not found.", msg_prefix="Incorrect message received for delete non existing user.")
 
     def test_unauthorized_access(self):
