@@ -28,7 +28,7 @@ class CreateCourseTest(TestCase):
         self.assertContains(resp, 'Unable to assign user')
 
     def test_empty_course_list(self):
+        # Remove course
         Course.objects.all().delete()
         resp = self.client.get('/assignCourse/', {})
-        print(resp.content.decode())
         self.assertContains(resp, "Your course list is empty. No courses to assign.")

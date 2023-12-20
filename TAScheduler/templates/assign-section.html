@@ -12,11 +12,11 @@
         <h3 class="form-title">Assign Section</h3>
     </div>
 <div class="horizontal-center">
-<table class="container">
-    <form action="/assignSection/" method="post">
-    {% csrf_token %}
 
-    <tr>
+            <form action="/assignSection/" method="post">
+            <table class="container">
+            {% csrf_token %}
+                <tr>
                     <td><label for="accountDropdown">Select User:</label></td>
                     <td>
                         <select name="userId" id="accountDropdown">
@@ -25,8 +25,8 @@
                             {% endfor %}
                         </select>
                     </td>
-    </tr>
-    <tr>
+                </tr>
+                <tr>
                     <td><label for="section">Select Section:</label></td>
                     <td>
                     {% if sections %}
@@ -44,16 +44,14 @@
                     <td><button class="back" type="button" onclick="location.href='/dashboard/'">Back</button></td>
                     <td><button type="submit">Assign Section</button></td>
                 </tr>
-    </table>
+        </table>
+
+
     </form>
     </div>
     <div class = "container">
-
         {{ message }}
     </div>
-
-
-
 
 </body>
 </html>

@@ -20,7 +20,6 @@ class CreateCourseTest(TestCase):
             'year': 2023,
             'description': 'Introduction to Testing'
         })
-        print(response.content.decode())
         self.assertRedirects(response, '/dashboard/')
 
     def test_course_creation_validation_errors(self):

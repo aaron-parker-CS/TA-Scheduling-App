@@ -8,12 +8,12 @@ from django.contrib.auth import logout
 class AssignSectionTest(TestCase):
     def setUp(self):
         self.client = Client()
-        # Creating a user with privileges to assign sections
+        # Creating a user with privileges to assign courses
         self.admin_user = User.objects.create_user('admin', 'admin@example.com')
         self.admin_user.set_password('adminpassword')
         self.admin_user.save()
 
-        # Creating an instructor
+        # Creating a user with privilege to ass sections
         self.instructor_user = User.objects.create_user('instructor', 'instructor@example.com')
         self.instructor_user.set_password('instructorpassword')
         self.instructor_user.save()
@@ -29,7 +29,7 @@ class AssignSectionTest(TestCase):
                                                    location='Testing room')
         self.test_section.save()
 
-        # Assigning section to instructor after login
+        # Assigning course to instructor after login
         self.client.post('/', {'username': 'admin', 'password': 'adminpassword'})
         self.client.post('/assignCourse/', {'userId': self.instructor_user.id, 'courseId': self.test_course.id})
 
@@ -52,7 +52,7 @@ class AssignSectionTest(TestCase):
         self.assertContains(resp, 'Unable to assign user')
 
     def test_empty_section_list(self):
+        # Remove course assignment
         UserAssignment.objects.all().delete()
         resp = self.client.get('/assignSection/', {})
-        print(resp.content.decode())
         self.assertContains(resp, "Your section list is empty. No sections to assign.")
