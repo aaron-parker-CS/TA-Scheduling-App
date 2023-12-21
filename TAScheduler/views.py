@@ -382,14 +382,22 @@ class assignSection(View):
         if not request.session['user_type'] == 'Supervisor' and not request.session['user_type'] == 'Instructor':
             raise PermissionDenied()
 
+        sections = []
+        user = User.objects.get(id=request.user.id)
+        sections = get_sections_by_course(user, sections)
+        users = []
+        assigned_courses = UserAssignment.objects.filter(user_id=user)
+        for course in assigned_courses:
+            users = get_users_by_course(course.course, users)
+
         user = User.objects.get(id=request.POST.get('userId'))
         section = Section.objects.get(id=request.POST.get('sectionId'))
         if assign_user_to_section(user, section):
 
             return render(request, 'assign-section.html',
-                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                          {'users': users, 'sections': sections,
                            'message': f'{user.username} successfully assigned to {section}'})
         else:
             return render(request, 'assign-section.html',
-                          {'users': User.objects.all(), 'sections': Section.objects.all(),
+                          {'users': users, 'sections': sections,
                            'message': 'Unable to assign user'})

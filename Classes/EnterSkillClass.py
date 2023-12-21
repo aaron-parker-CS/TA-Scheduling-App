@@ -45,7 +45,7 @@ class EnterSkillClass:
             skills.save()
 
         user_assignment = None
-        if UserHasSkill.objects.filter(skill=skills).exists():
+        if UserHasSkill.objects.filter(user=user, skill=skills).exists():
             return False
         else:
             user_assignment = UserHasSkill.objects.create(user=user, skill=skills)
